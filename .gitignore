@@ -1,0 +1,11 @@
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+
+# Node (in case you add dependencies later)
+node_modules/
+npm-debug.log*
