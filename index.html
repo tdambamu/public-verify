@@ -1,105 +1,413 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CredChain Demo | Blockchain Verification</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CredChain | Blockchain Credential Verification</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-blue-500 to-purple-600 min-h-screen p-4">
-    <div class="max-w-2xl mx-auto mt-10 bg-white rounded-2xl shadow-2xl overflow-hidden">
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl card-shadow max-w-2xl w-full overflow-hidden">
         <!-- Header -->
         <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-8 text-center">
-            <h1 class="text-3xl font-bold">🔗 CredChain Zimbabwe</h1>
-            <p class="text-gray-300 mt-2">Blockchain Credential Verification Demo</p>
-            <div class="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold">
-                LIVE DEMO • IMMUTABLE • SECURE
-            </div>
+            <h1 class="text-3xl font-bold mb-2">🔗 CredChain Zimbabwe</h1>
+            <p class="text-gray-300 mb-4">Blockchain-Powered Academic Credential Verification</p>
+            <span class="inline-block bg-green-600 text-white px-4 py-1 rounded-full text-sm font-bold">
+                Immutable • Transparent • Secure
+            </span>
         </div>
-        
+
         <!-- Content -->
         <div class="p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Verify Academic Credential</h2>
-            
-            <!-- Input -->
-            <div class="flex gap-2 mb-6">
-                <input type="text" id="credentialId" placeholder="Enter Demo ID: demo-123" 
-                       class="flex-1 border border-gray-300 rounded-xl p-4 text-lg">
-                <button onclick="verifyDemo()" 
-                        class="bg-indigo-600 text-white font-bold px-8 rounded-xl hover:bg-indigo-700">
-                    Verify
-                </button>
-            </div>
-            
-            <!-- Demo Results -->
-            <div id="result" class="hidden bg-gray-50 rounded-xl p-6 border-2 border-green-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gray-900" id="demoTitle">Bachelor of Computer Science</h3>
-                    <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-bold">✓ VALID</span>
+            <!-- Input Section -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Verify Academic Credential</h2>
+                <div class="flex gap-2 mb-3">
+                    <input 
+                        id="credentialId" 
+                        type="text" 
+                        placeholder="Paste Credential Public ID or URL..."
+                        class="flex-1 border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        value="">
+                    <button 
+                        onclick="verifyCredential()"
+                        class="bg-indigo-600 text-white font-bold px-8 rounded-xl hover:bg-indigo-700 transition"
+                        id="verifyBtn">
+                        Verify
+                    </button>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <p class="text-sm text-gray-500">Learner</p>
-                        <p class="text-lg font-semibold" id="demoLearner">Tendai Moyo</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Institution</p>
-                        <p class="text-lg font-semibold" id="demoInstitution">University of Zimbabwe</p>
-                    </div>
-                </div>
-                
-                <!-- Blockchain Proof -->
-                <div class="bg-white p-4 rounded-lg border border-gray-300">
-                    <p class="text-sm text-gray-500 mb-2">Blockchain Hash</p>
-                    <code class="text-sm font-mono bg-gray-100 p-2 rounded block">
-                        0x89a2f4c8d3e7b1a5f9c2d6e8a4b7c3d1f5e9a2b8c4d6f7e3a1b9c5d2e8f4a6b7
-                    </code>
-                    <p class="text-green-600 text-sm mt-2">✅ Verified on Ethereum blockchain</p>
-                </div>
-            </div>
-            
-            <!-- Demo Notice -->
-            <div class="mt-8 p-4 bg-blue-50 rounded-xl">
-                <p class="text-blue-800">
-                    <span class="font-bold">This is a demonstration.</span> 
-                    In production, each credential is permanently stored on the blockchain.
+                <p class="text-sm text-gray-600">
+                    ℹ️ Enter the Public ID provided by the credential holder
+                </p>
+                <p class="text-xs text-gray-500 mt-1">
+                    Example: <code class="bg-gray-100 px-2 py-1 rounded">fd9acfcd-9602-4cc5-8612-b84f4c48383c</code>
                 </p>
             </div>
+
+            <!-- Loading -->
+            <div id="loading" class="hidden text-center py-8">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <p class="text-gray-600">Verifying credential...</p>
+            </div>
+
+            <!-- Error -->
+            <div id="error" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+                <p class="text-red-700" id="errorText"></p>
+            </div>
+
+            <!-- Results -->
+            <div id="result" class="hidden">
+                <div class="border-2 border-gray-100 rounded-xl p-6">
+                    <div class="flex justify-between items-start mb-6 pb-4 border-b border-gray-100">
+                        <div>
+                            <h3 id="credentialTitle" class="text-2xl font-bold text-gray-900">-</h3>
+                            <p id="institutionName" class="text-gray-600">-</p>
+                        </div>
+                        <span id="statusIndicator" class="px-4 py-2 rounded-full text-sm font-bold">Unknown</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Learner</p>
+                            <p id="learnerName" class="text-lg font-semibold text-gray-900">-</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Type</p>
+                            <p id="credentialType" class="text-lg font-semibold text-gray-900">-</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Issued</p>
+                            <p id="issuedDate" class="text-lg font-semibold text-gray-900">-</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Status</p>
+                            <p id="expiryDate" class="text-lg font-semibold text-gray-900">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Blockchain Proof -->
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-lg">🔗</span>
+                            <h4 class="font-bold text-gray-900">Blockchain Verification</h4>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-gray-300 mb-3">
+                            <code id="blockchainHash" class="text-sm text-gray-700 font-mono break-all">-</code>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span id="blockchainStatus" class="font-medium">Checking blockchain...</span>
+                            <span id="timestamp" class="text-gray-600">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Verification ID -->
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <p class="text-xs text-gray-500">Verification ID: <span id="verificationId" class="font-mono text-gray-700">-</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-bold text-blue-800">System Status</h4>
+                    <button onclick="testConnection()" class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                        Test Connection
+                    </button>
+                </div>
+                <div class="space-y-2 text-xs text-blue-700">
+                    <div class="flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2" id="apiStatusDot"></span>
+                        <span>Backend API: <span id="apiStatus" class="font-mono">Checking...</span></span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-yellow-500 mr-2" id="blockchainStatusDot"></span>
+                        <span>Blockchain: <span id="blockchainConnection" class="font-mono">Checking...</span></span>
+                    </div>
+                </div>
+            </div>
         </div>
-        
+
         <!-- Footer -->
-        <div class="bg-gray-50 border-t border-gray-200 p-4 text-center text-gray-600 text-sm">
-            <p>Powered by CredChain Zimbabwe • Blockchain Academic Credential System</p>
-            <p class="text-xs mt-1">For demonstration purposes only</p>
+        <div class="bg-gray-50 border-t border-gray-200 p-4 text-center">
+            <p class="text-sm text-gray-600">
+                Powered by <span class="font-bold text-indigo-700">CredChain Zimbabwe</span>
+            </p>
+            <p class="text-xs text-gray-500 mt-1">
+                Connected to institutional blockchain network • Immutable verification
+            </p>
         </div>
     </div>
 
     <script>
-        function verifyDemo() {
-            const input = document.getElementById('credentialId').value.trim();
-            const demoId = input || 'demo-123';
-            
-            // Show loading state
-            document.getElementById('result').classList.add('hidden');
-            
-            // Simulate API call
-            setTimeout(() => {
-                document.getElementById('demoTitle').textContent = 
-                    demoId.includes('123') ? 'Bachelor of Computer Science' : 'Diploma in Engineering';
-                document.getElementById('demoLearner').textContent = 
-                    demoId.includes('123') ? 'Tendai Moyo' : 'James Chikwava';
-                document.getElementById('demoInstitution').textContent = 
-                    demoId.includes('123') ? 'University of Zimbabwe' : 'National University';
-                
-                document.getElementById('result').classList.remove('hidden');
-            }, 800);
-        }
+        // Configuration - UPDATE THIS FOR PRODUCTION
+        const API_BASE_URL = 'http://localhost:8080'; // Your Spring Boot backend
+        // For deployed backend: 'https://your-backend.com'
         
-        // Auto-verify if URL has publicId
-        const urlParams = new URLSearchParams(window.location.search);
-        const publicId = urlParams.get('publicId');
-        if (publicId) {
-            document.getElementById('credentialId').value = publicId;
-            setTimeout(verifyDemo, 500);
+        // Extract public ID from URL
+        function getPublicIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('publicId') || '';
+        }
+
+        // Test API and blockchain connection
+        async function testConnection() {
+            updateStatus('apiStatus', 'Checking...', 'yellow');
+            updateStatus('blockchainConnection', 'Checking...', 'yellow');
+            
+            try {
+                // Test API connection
+                const apiResponse = await fetch(`${API_BASE_URL}/api/public/health`);
+                if (apiResponse.ok) {
+                    updateStatus('apiStatus', 'Connected ✓', 'green');
+                } else {
+                    updateStatus('apiStatus', 'Connection failed', 'red');
+                }
+                
+                // Test blockchain connection (optional)
+                updateStatus('blockchainConnection', 'Ready', 'green');
+                
+            } catch (error) {
+                updateStatus('apiStatus', 'Cannot connect', 'red');
+                updateStatus('blockchainConnection', 'Offline', 'red');
+                console.warn('Connection test failed:', error);
+            }
+        }
+
+        function updateStatus(elementId, text, color) {
+            const element = document.getElementById(elementId);
+            const dot = document.getElementById(elementId + 'Dot');
+            
+            if (element) element.textContent = text;
+            if (dot) {
+                dot.className = 'w-2 h-2 rounded-full mr-2';
+                if (color === 'green') dot.classList.add('bg-green-500');
+                else if (color === 'yellow') dot.classList.add('bg-yellow-500');
+                else if (color === 'red') dot.classList.add('bg-red-500');
+            }
+        }
+
+        // Set initial value if URL has publicId
+        document.addEventListener('DOMContentLoaded', function() {
+            const publicId = getPublicIdFromUrl();
+            if (publicId) {
+                document.getElementById('credentialId').value = publicId;
+                // Auto-verify after a short delay
+                setTimeout(() => verifyCredential(), 1000);
+            }
+            
+            // Test connection on load
+            testConnection();
+        });
+
+        async function verifyCredential() {
+            const input = document.getElementById('credentialId').value.trim();
+            if (!input) {
+                showError('Please enter a credential ID');
+                return;
+            }
+
+            // Extract public ID from URL if it's a full URL
+            let publicId = input;
+            if (input.includes('publicId=')) {
+                try {
+                    const url = new URL(input);
+                    publicId = url.searchParams.get('publicId') || input;
+                } catch (e) {
+                    // If it's not a valid URL, use as-is
+                }
+            }
+
+            showLoading();
+            hideError();
+            hideResult();
+
+            try {
+                // 1. Verify with your backend API - USING PUBLIC ENDPOINT
+                const apiResponse = await verifyWithAPI(publicId);
+                
+                // 2. Then check blockchain proof - USING PUBLIC ENDPOINT
+                const blockchainProof = await getBlockchainProof(publicId);
+                
+                // 3. Display results
+                displayResults(apiResponse, blockchainProof, publicId);
+                
+            } catch (error) {
+                showError('Verification failed: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function verifyWithAPI(publicId) {
+            // USING THE NEW PUBLIC ENDPOINT
+            const response = await fetch(`${API_BASE_URL}/api/public/verify/${encodeURIComponent(publicId)}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('Credential not found in registry');
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `API error: ${response.status}`);
+                }
+            }
+            
+            return await response.json();
+        }
+
+        async function getBlockchainProof(publicId) {
+            try {
+                // USING THE NEW PUBLIC ENDPOINT
+                const response = await fetch(`${API_BASE_URL}/api/public/blockchain/proof/${encodeURIComponent(publicId)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    return await response.json();
+                } else {
+                    // Fallback if blockchain endpoint not available
+                    return {
+                        existsOnChain: false,
+                        credentialHash: null,
+                        error: 'Blockchain check not available'
+                    };
+                }
+            } catch (error) {
+                console.warn('Blockchain proof error:', error);
+                return {
+                    existsOnChain: false,
+                    credentialHash: null,
+                    error: error.message
+                };
+            }
+        }
+
+        function displayResults(apiData, blockchainProof, publicId) {
+            const resultDiv = document.getElementById('result');
+            const statusIndicator = document.getElementById('statusIndicator');
+            
+            // Update UI with API data
+            document.getElementById('credentialTitle').textContent = apiData.title || 'Credential';
+            document.getElementById('institutionName').textContent = apiData.institutionName || 'Institution';
+            document.getElementById('learnerName').textContent = apiData.learnerFullName || 'Learner';
+            document.getElementById('credentialType').textContent = apiData.credentialType || 'Not specified';
+            document.getElementById('issuedDate').textContent = formatDate(apiData.issuedAt);
+            document.getElementById('expiryDate').textContent = formatDate(apiData.expiresAt);
+            document.getElementById('verificationId').textContent = publicId;
+            
+            // Update blockchain info
+            const hash = blockchainProof.credentialHash || blockchainProof.hash;
+            document.getElementById('blockchainHash').textContent = hash || 'Not found on chain';
+            
+            // Determine status - using existsOnChain OR active field
+            const existsOnChain = blockchainProof.existsOnChain || blockchainProof.active;
+            const isValid = apiData.valid && existsOnChain;
+            
+            if (isValid) {
+                statusIndicator.textContent = '✓ VALID';
+                statusIndicator.className = 'px-4 py-2 rounded-full text-sm font-bold bg-green-100 text-green-800';
+                document.getElementById('blockchainStatus').textContent = '✅ Verified on blockchain';
+                document.getElementById('blockchainStatus').style.color = '#166534';
+                updateStatus('blockchainConnection', 'Verified ✓', 'green');
+            } else {
+                statusIndicator.textContent = '✗ INVALID';
+                statusIndicator.className = 'px-4 py-2 rounded-full text-sm font-bold bg-red-100 text-red-800';
+                document.getElementById('blockchainStatus').textContent = '❌ Not verified on blockchain';
+                document.getElementById('blockchainStatus').style.color = '#991b1b';
+                
+                if (apiData.valid && !existsOnChain) {
+                    updateStatus('blockchainConnection', 'Not on chain', 'yellow');
+                } else {
+                    updateStatus('blockchainConnection', 'Verification failed', 'red');
+                }
+            }
+            
+            document.getElementById('timestamp').textContent = 
+                `Verified at: ${new Date().toLocaleTimeString()}`;
+            
+            resultDiv.style.display = 'block';
+            
+            // Update URL with publicId for sharing
+            if (window.history.pushState) {
+                const newUrl = `${window.location.origin}${window.location.pathname}?publicId=${encodeURIComponent(publicId)}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Not specified';
+            try {
+                // Handle various date formats
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) {
+                    // Try to extract just the date part
+                    const datePart = dateString.split('T')[0];
+                    return datePart || dateString;
+                }
+                return date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('verifyBtn').disabled = true;
+            document.getElementById('verifyBtn').textContent = 'Verifying...';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('verifyBtn').disabled = false;
+            document.getElementById('verifyBtn').textContent = 'Verify';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function hideResult() {
+            document.getElementById('result').style.display = 'none';
         }
     </script>
 </body>
