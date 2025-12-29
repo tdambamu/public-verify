@@ -3,45 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CredChain | Academic Credential Verification</title>
+    <title>CredChain | Credential Verification</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Serif+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        .blue-gradient {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        .certificate-bg {
+            background: linear-gradient(135deg, #f9f7f3 0%, #f5f2eb 100%);
         }
         .certificate-border {
-            border: 2px solid #1e40af;
-            position: relative;
+            border: 20px solid transparent;
+            border-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="10" ry="10" fill="none" stroke="%233b82f6" stroke-width="2"/></svg>') 30 stretch;
             background: white;
         }
-        .certificate-border:before {
-            content: "";
-            position: absolute;
-            top: -8px;
-            left: -8px;
-            right: -8px;
-            bottom: -8px;
-            border: 1px solid #e2e8f0;
-            z-index: -1;
+        .certificate-header {
+            background: linear-gradient(135deg, #2c5282 0%, #2d3748 100%);
+            color: white;
         }
-        .university-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        .gold-text {
+            color: #d4af37;
         }
-        .accent-line {
-            height: 3px;
-            background: linear-gradient(90deg, #3b82f6, #1e40af, #3b82f6);
+        .formal-font {
+            font-family: 'Playfair Display', serif;
         }
-        .accent-line-thin {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+        .body-font {
+            font-family: 'Source Serif Pro', serif;
         }
-        .student-name {
-            font-family: 'Georgia', serif;
-            letter-spacing: 0.5px;
+        .signature-line {
+            border-bottom: 1px solid #4a5568;
+            width: 200px;
+            margin: 5px auto;
         }
-        .section-divider {
-            border-top: 1px dashed #cbd5e1;
+        .decorative-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4a5568, transparent);
+            margin: 20px auto;
+        }
+        .accent-border {
+            border-left: 4px solid #2c5282;
+            padding-left: 15px;
+        }
+        .print-only {
+            display: none;
+        }
+        @media print {
+            .print-only {
+                display: block;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .certificate-border {
+                border: none;
+                box-shadow: none;
+            }
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -50,105 +70,77 @@
         .fade-in {
             animation: fadeIn 0.3s ease-out;
         }
-        .card-shadow {
-            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15);
-        }
-        .status-badge {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-        }
-        .loading-dots:after {
-            content: ' .';
-            animation: dots 1.5s steps(5, end) infinite;
-        }
-        @keyframes dots {
-            0%, 20% { content: ' .'; }
-            40% { content: ' ..'; }
-            60% { content: ' ...'; }
-            80%, 100% { content: ' ...'; }
-        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Header with Certificate Layout Aesthetic -->
-    <div class="university-header text-white py-8">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl font-bold tracking-wide mb-2">CREDCHAIN VERIFICATION</h1>
-            <div class="accent-line w-48 mx-auto mb-3"></div>
-            <p class="text-lg">Official Academic Credential Verification Portal</p>
+<body class="certificate-bg min-h-screen p-4">
+    <!-- Header - Hidden when printing -->
+    <div class="no-print">
+        <div class="max-w-4xl mx-auto mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+                    <div class="flex items-center gap-3 mb-4 md:mb-0">
+                        <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+                            <i class="fas fa-shield-check text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900 formal-font">CredChain Verification</h1>
+                            <p class="text-gray-600">Academic Credential Verification System</p>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <input 
+                            id="credentialId" 
+                            type="text" 
+                            placeholder="Enter Credential ID..."
+                            class="border border-gray-300 rounded-lg px-4 py-2 pr-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value="">
+                        <button 
+                            onclick="verifyCredential()"
+                            class="absolute right-1 top-1 bg-blue-600 text-white px-4 py-1 rounded-md hover:bg-blue-700 transition text-sm"
+                            id="verifyBtn">
+                            Verify
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Example ID for testing:</p>
+                            <code class="text-sm font-mono text-blue-700">fd9acfcd-9602-4cc5-8612-b84f4c48383c</code>
+                        </div>
+                        <button onclick="useExample()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            Try Example
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <!-- Verification Input Card -->
-        <div class="certificate-border rounded-lg card-shadow p-8 mb-8 bg-white fade-in">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">VERIFY CREDENTIAL</h2>
-                <div class="accent-line-thin w-32 mx-auto"></div>
-            </div>
-            
-            <div class="relative mb-4">
-                <div class="flex items-center gap-2 mb-3 justify-center">
-                    <i class="fas fa-search text-blue-600"></i>
-                    <label class="font-medium text-gray-700 text-lg">Enter Credential ID</label>
-                </div>
-                <div class="flex gap-3">
-                    <input 
-                        id="credentialId" 
-                        type="text" 
-                        placeholder="Paste credential ID or verification link..."
-                        class="flex-1 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value="">
-                    <button 
-                        onclick="verifyCredential()"
-                        class="blue-gradient text-white font-bold px-6 rounded-lg hover:opacity-90 transition"
-                        id="verifyBtn">
-                        Verify
-                    </button>
-                </div>
-                <p class="text-sm text-gray-500 mt-3 text-center">
-                    <i class="fas fa-info-circle mr-1"></i>
-                    Enter the credential ID provided by the institution
-                </p>
-            </div>
-
-            <!-- Example -->
-            <div class="bg-blue-50 rounded-lg p-4 mt-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Example ID for testing:</p>
-                        <code class="text-sm font-mono text-blue-700">fd9acfcd-9602-4cc5-8612-b84f4c48383c</code>
-                    </div>
-                    <button onclick="useExample()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                        Try Example
-                    </button>
-                </div>
-            </div>
-        </div>
-
+    <div class="max-w-4xl mx-auto">
         <!-- Loading State -->
-        <div id="loading" class="hidden certificate-border rounded-lg card-shadow p-8 text-center mb-8 bg-white fade-in">
+        <div id="loading" class="hidden text-center py-12">
             <div class="inline-flex flex-col items-center">
                 <div class="relative mb-6">
                     <div class="w-16 h-16 border-4 border-blue-100 rounded-full"></div>
                     <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full absolute top-0 left-0 animate-spin"></div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">VERIFYING CREDENTIAL</h3>
-                <p class="text-gray-600 loading-dots">Checking authenticity</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Verifying Credential</h3>
+                <p class="text-gray-600">Checking authenticity and blockchain verification</p>
             </div>
         </div>
 
         <!-- Error State -->
-        <div id="error" class="hidden bg-red-50 border border-red-200 rounded-lg p-6 mb-8 fade-in">
+        <div id="error" class="hidden bg-red-50 border border-red-200 rounded-xl p-6 mb-8 fade-in">
             <div class="flex items-start">
-                <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
-                <div>
-                    <h3 class="font-bold text-red-800 text-lg">Verification Failed</h3>
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-500 text-xl mt-1"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-bold text-red-800">Verification Failed</h3>
                     <p class="text-red-700 mt-1" id="errorText"></p>
                     <button onclick="hideError()" class="mt-3 text-red-600 hover:text-red-800 text-sm font-medium">
                         Dismiss
@@ -157,90 +149,111 @@
             </div>
         </div>
 
-        <!-- Results in Certificate Layout -->
-        <div id="result" class="hidden">
-            <div class="certificate-border rounded-lg card-shadow overflow-hidden bg-white">
+        <!-- Certificate Results -->
+        <div id="result" class="hidden fade-in">
+            <div class="certificate-border rounded-lg shadow-2xl overflow-hidden relative">
                 <!-- Certificate Header -->
-                <div class="university-header text-white text-center py-8">
-                    <h1 id="institutionName" class="text-3xl font-bold tracking-wide">ISSUING INSTITUTION</h1>
-                    <div class="accent-line w-48 mx-auto my-4"></div>
-                    <p class="text-lg">Official Credential Verification</p>
+                <div class="certificate-header text-center py-8 px-4">
+                    <h1 class="text-4xl font-bold tracking-wide mb-2 formal-font">CERTIFICATE</h1>
+                    <div class="decorative-line w-48"></div>
+                    <h2 class="text-2xl font-semibold gold-text mb-4 formal-font">OF COMPLETION</h2>
                 </div>
 
                 <!-- Certificate Body -->
-                <div class="p-8 md:p-12">
-                    <!-- Status Header -->
-                    <div class="text-center mb-10">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="text-left">
-                                <h3 class="text-xl font-bold text-gray-800">CREDENTIAL VERIFIED</h3>
+                <div class="p-8 md:p-12 body-font">
+                    <!-- Status Indicator (for web only) -->
+                    <div class="no-print mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">Credential Verified</h3>
                                 <p id="verificationTime" class="text-gray-600 text-sm"></p>
                             </div>
-                            <div id="statusBadge" class="status-badge bg-blue-600 text-white px-4 py-2 rounded-full font-bold">
+                            <div id="statusBadge" class="bg-green-500 text-white px-4 py-2 rounded-full font-bold">
                                 VERIFIED
                             </div>
                         </div>
-                        <div class="accent-line-thin w-full"></div>
                     </div>
 
-                    <!-- Credential Holder Section -->
+                    <!-- Presented To Section -->
                     <div class="text-center mb-12">
-                        <div class="flex items-center gap-2 mb-4 justify-center">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                                <i class="fas fa-user-graduate text-blue-600"></i>
-                            </div>
-                            <h4 class="text-lg font-bold text-gray-800">CREDENTIAL HOLDER</h4>
-                        </div>
+                        <h3 class="text-2xl font-bold text-gray-700 mb-6 formal-font">PRESENTED TO:</h3>
                         
+                        <!-- Recipient Name -->
                         <div class="my-8">
-                            <h4 id="learnerName" class="student-name text-3xl font-bold text-gray-900 mb-4">-</h4>
-                            <div class="accent-line w-56 mx-auto"></div>
+                            <h4 id="learnerName" class="text-4xl font-bold text-gray-900 mb-6 formal-font">-</h4>
+                            <div class="decorative-line w-64"></div>
+                        </div>
+
+                        <!-- Achievement Statement -->
+                        <div class="max-w-2xl mx-auto mb-10">
+                            <p class="text-xl text-gray-700 leading-relaxed body-font" id="achievementStatement">
+                                WHO HAVE COMPLETED A TRAINING PROGRAM, INDICATING THAT THEY
+                                HAVE MET THE REQUIRED STANDARDS OF KNOWLEDGE AND SKILLS.
+                            </p>
+                        </div>
+
+                        <!-- Credential Details -->
+                        <div class="bg-gray-50 rounded-lg p-6 mb-10 max-w-2xl mx-auto">
+                            <h5 class="text-lg font-bold text-gray-800 mb-4 formal-font">CREDENTIAL DETAILS</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">Institution</p>
+                                    <p id="institutionName" class="font-bold text-gray-900 text-lg">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Credential</p>
+                                    <p id="credentialTitle" class="font-bold text-gray-900 text-lg">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Credential ID</p>
+                                    <p id="credentialIdDisplay" class="font-bold text-gray-900 font-mono">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Verification ID</p>
+                                    <p id="verificationId" class="font-bold text-gray-900 font-mono">-</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Credential Details Section -->
-                    <div class="mb-10">
-                        <div class="flex items-center gap-2 mb-4 justify-center">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                                <i class="fas fa-certificate text-blue-600"></i>
+                    <!-- Signatures Section -->
+                    <div class="mt-12 pt-12 border-t border-gray-300">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                            <!-- Issuing Authority -->
+                            <div class="text-center">
+                                <p class="text-sm text-gray-600 mb-2">ISSUING AUTHORITY</p>
+                                <div class="signature-line"></div>
+                                <p class="font-bold text-gray-900 text-lg mt-2" id="issuingAuthorityName">REESE MILLER</p>
+                                <p class="text-gray-600">College President</p>
+                                
+                                <!-- Blockchain Signature (Print only) -->
+                                <div class="print-only mt-4">
+                                    <p class="text-xs text-gray-600 mb-1">Blockchain Signature</p>
+                                    <div class="signature-line" style="width: 150px;"></div>
+                                    <code id="blockchainHashPrint" class="text-xs font-mono text-gray-700 break-all">-</code>
+                                </div>
                             </div>
-                            <h4 class="text-lg font-bold text-gray-800">CREDENTIAL ISSUED</h4>
-                        </div>
-                        
-                        <div class="bg-blue-50 rounded-lg p-6 text-center">
-                            <p id="credentialTitle" class="text-2xl font-bold text-gray-900 mb-4">-</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                                <div>
-                                    <p class="text-sm text-gray-600 uppercase tracking-wider">Issued Date</p>
-                                    <p id="issuedDate" class="font-semibold text-gray-800 text-lg">-</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-600 uppercase tracking-wider">Credential ID</p>
-                                    <p id="credentialIdDisplay" class="font-semibold text-gray-800 text-lg font-mono">-</p>
-                                </div>
+
+                            <!-- Date Issued -->
+                            <div class="text-center">
+                                <p class="text-sm text-gray-600 mb-2">DATE ISSUED</p>
+                                <div class="signature-line"></div>
+                                <p id="issuedDate" class="font-bold text-gray-900 text-lg mt-2">-</p>
+                                <p class="text-gray-600">Date of Certification</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="section-divider my-10"></div>
-
-                    <!-- Blockchain Certification Section -->
-                    <div class="mb-8">
-                        <div class="flex items-center gap-2 mb-4 justify-center">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                                <i class="fas fa-link text-blue-600"></i>
-                            </div>
-                            <h4 class="text-lg font-bold text-gray-800">BLOCKCHAIN CERTIFICATION</h4>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white">
+                    <!-- Blockchain Verification Section (Web only) -->
+                    <div class="no-print mt-12">
+                        <div class="bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl p-6 text-white">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="flex items-center gap-3">
                                     <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
                                         <i class="fas fa-check-circle text-green-400 text-xl"></i>
                                     </div>
                                     <div>
-                                        <h5 class="font-bold text-lg">Blockchain Verified</h5>
+                                        <h5 class="font-bold text-lg">Blockchain Certified</h5>
                                         <p class="text-blue-200 text-sm">Immutable record on distributed ledger</p>
                                     </div>
                                 </div>
@@ -254,14 +267,14 @@
                             
                             <div class="bg-black/30 rounded p-4 mb-4">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-blue-300">Transaction Hash:</span>
-                                    <span class="text-xs text-blue-200">Verified on-chain</span>
+                                    <span class="text-sm text-blue-300">Blockchain Signature:</span>
+                                    <span class="text-xs text-blue-200">Digitally signed and verified</span>
                                 </div>
                                 <code id="blockchainHash" class="text-sm font-mono text-white break-all">-</code>
                             </div>
                             
                             <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-6">
+                                <div class="flex items-center gap-4">
                                     <div class="flex items-center gap-2">
                                         <div class="w-2 h-2 rounded-full bg-green-500"></div>
                                         <span class="text-blue-200">Immutable</span>
@@ -276,34 +289,14 @@
                         </div>
                     </div>
 
-                    <!-- Verification Footer -->
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 mt-8">
-                        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                            <div>
-                                <p class="text-sm text-gray-600 uppercase tracking-wider">Verification ID</p>
-                                <p id="verificationId" class="font-mono text-gray-800 font-bold text-lg break-all">-</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="printVerification()" class="flex items-center gap-2 blue-gradient text-white px-5 py-2 rounded-lg hover:opacity-90 transition">
-                                    <i class="fas fa-print"></i> Print
-                                </button>
-                                <button onclick="shareVerification()" class="flex items-center gap-2 bg-gray-200 text-gray-800 px-5 py-2 rounded-lg hover:bg-gray-300 transition">
-                                    <i class="fas fa-share-alt"></i> Share
-                                </button>
-                            </div>
-                        </div>
+                    <!-- Print Button (Web only) -->
+                    <div class="no-print mt-8 text-center">
+                        <button onclick="printCertificate()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium">
+                            <i class="fas fa-print mr-2"></i> Print Certificate
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- System Info -->
-        <div class="mt-10 text-center">
-            <div class="accent-line-thin w-32 mx-auto mb-4"></div>
-            <p class="text-gray-600">
-                <i class="fas fa-lock text-blue-600 mr-2"></i>
-                Powered by CredChain Blockchain Network • Immutable Verification
-            </p>
         </div>
     </div>
 
@@ -420,9 +413,9 @@
             const statusBadge = document.getElementById('statusBadge');
             const blockchainStatus = document.getElementById('blockchainStatus');
             
-            // Update basic info
-            document.getElementById('institutionName').textContent = apiData.institutionName || 'Issuing Institution';
+            // Update certificate fields
             document.getElementById('learnerName').textContent = apiData.learnerFullName || 'Credential Holder';
+            document.getElementById('institutionName').textContent = apiData.institutionName || 'Issuing Institution';
             document.getElementById('credentialTitle').textContent = apiData.title || 'Credential';
             document.getElementById('issuedDate').textContent = formatDate(apiData.issuedAt) || 'Not specified';
             document.getElementById('credentialIdDisplay').textContent = apiData.credentialNumber || publicId.substring(0, 24) + '...';
@@ -432,6 +425,7 @@
             // Blockchain info
             const hash = blockchainProof.credentialHash || blockchainProof.hash;
             document.getElementById('blockchainHash').textContent = hash || 'Not recorded on blockchain';
+            document.getElementById('blockchainHashPrint').textContent = hash || 'Not recorded on blockchain';
             document.getElementById('blockTimestamp').textContent = `Block timestamp: ${new Date().toLocaleDateString()}`;
             
             // Determine validity
@@ -441,7 +435,7 @@
             if (isValid) {
                 // Valid
                 statusBadge.textContent = '✓ VERIFIED';
-                statusBadge.className = 'status-badge bg-green-500 text-white px-4 py-2 rounded-full font-bold';
+                statusBadge.className = 'bg-green-500 text-white px-4 py-2 rounded-full font-bold';
                 blockchainStatus.innerHTML = `
                     <span class="inline-flex items-center gap-1 bg-green-500/30 px-3 py-1 rounded-full">
                         <span class="w-2 h-2 rounded-full bg-green-300"></span>
@@ -451,7 +445,7 @@
             } else if (apiData.valid && !existsOnChain) {
                 // Valid but not on blockchain
                 statusBadge.textContent = 'ISSUER VERIFIED';
-                statusBadge.className = 'status-badge bg-yellow-500 text-white px-4 py-2 rounded-full font-bold';
+                statusBadge.className = 'bg-yellow-500 text-white px-4 py-2 rounded-full font-bold';
                 blockchainStatus.innerHTML = `
                     <span class="inline-flex items-center gap-1 bg-yellow-500/30 px-3 py-1 rounded-full">
                         <span class="w-2 h-2 rounded-full bg-yellow-300"></span>
@@ -461,7 +455,7 @@
             } else {
                 // Invalid
                 statusBadge.textContent = '✗ INVALID';
-                statusBadge.className = 'status-badge bg-red-500 text-white px-4 py-2 rounded-full font-bold';
+                statusBadge.className = 'bg-red-500 text-white px-4 py-2 rounded-full font-bold';
                 blockchainStatus.innerHTML = `
                     <span class="inline-flex items-center gap-1 bg-red-500/30 px-3 py-1 rounded-full">
                         <span class="w-2 h-2 rounded-full bg-red-300"></span>
@@ -527,32 +521,9 @@
             document.getElementById('result').style.display = 'none';
         }
 
-        // Additional functions
-        function printVerification() {
-            const resultDiv = document.getElementById('result');
-            const originalContents = document.body.innerHTML;
-            
-            document.body.innerHTML = resultDiv.innerHTML;
+        // Print certificate function
+        function printCertificate() {
             window.print();
-            document.body.innerHTML = originalContents;
-            window.location.reload();
-        }
-
-        function shareVerification() {
-            const publicId = document.getElementById('credentialId').value;
-            const verificationUrl = `${window.location.origin}${window.location.pathname}?publicId=${encodeURIComponent(publicId)}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Credential Verification',
-                    text: 'Verify this credential on CredChain',
-                    url: verificationUrl
-                });
-            } else {
-                navigator.clipboard.writeText(verificationUrl).then(() => {
-                    alert('Verification link copied to clipboard!');
-                });
-            }
         }
     </script>
 </body>
