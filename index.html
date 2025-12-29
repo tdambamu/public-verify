@@ -3,239 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CredChain | Blockchain Credential Verification</title>
+    <title>CredChain Zimbabwe | Blockchain Credential Verification</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .certificate-border {
+            border: 15px solid transparent;
+            border-image: linear-gradient(45deg, #1e40af, #1e3a8a, #1e293b);
+            border-image-slice: 1;
         }
-        .card-shadow {
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        .university-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #6366f1;
+        .gold-text {
+            background: linear-gradient(to right, #d4af37, #f7ef8a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .seal-effect {
+            position: relative;
+        }
+        .seal-effect:before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border: 2px dashed #d4af37;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+            opacity: 0.3;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .watermark {
+            position: absolute;
+            opacity: 0.03;
+            font-size: 15rem;
+            font-weight: bold;
+            color: #1e293b;
+            z-index: 0;
+            user-select: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
         }
     </style>
 </head>
-<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl card-shadow max-w-2xl w-full overflow-hidden">
+<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-8 text-center">
-            <h1 class="text-3xl font-bold mb-2">🔗 CredChain Zimbabwe</h1>
-            <p class="text-gray-300 mb-4">Blockchain-Powered Academic Credential Verification</p>
-            <span class="inline-block bg-green-600 text-white px-4 py-1 rounded-full text-sm font-bold">
-                Immutable • Transparent • Secure
-            </span>
-        </div>
-
-        <!-- Content -->
-        <div class="p-8">
-            <!-- Input Section -->
-            <div class="mb-8">
+        <div class="text-center mb-8 md:mb-12 fade-in">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-800 flex items-center justify-center">
+                    <i class="fas fa-shield-check text-white text-xl"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">CredChain Zimbabwe</h1>
+            </div>
+            <p class="text-gray-600 text-lg mb-6">Blockchain-Powered Academic Credential Verification System</p>
+            
+            <!-- Verification Input -->
+            <div class="bg-white rounded-xl shadow-lg p-6 max-w-2xl mx-auto mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Verify Academic Credential</h2>
-                <div class="flex gap-2 mb-3">
-                    <input 
-                        id="credentialId" 
-                        type="text" 
-                        placeholder="Paste Credential Public ID or URL..."
-                        class="flex-1 border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        value="">
+                <div class="flex flex-col sm:flex-row gap-3 mb-3">
+                    <div class="relative flex-1">
+                        <i class="fas fa-id-card absolute left-4 top-4 text-gray-400"></i>
+                        <input 
+                            id="credentialId" 
+                            type="text" 
+                            placeholder="Paste Credential Public ID or Verification URL..."
+                            class="w-full border border-gray-300 rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value="">
+                    </div>
                     <button 
                         onclick="verifyCredential()"
-                        class="bg-indigo-600 text-white font-bold px-8 rounded-xl hover:bg-indigo-700 transition"
+                        class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-all shadow-md"
                         id="verifyBtn">
-                        Verify
+                        <i class="fas fa-search mr-2"></i>Verify Credential
                     </button>
                 </div>
-                <p class="text-sm text-gray-600">
-                    ℹ️ Enter the Public ID provided by the credential holder
-                </p>
-                <p class="text-xs text-gray-500 mt-1">
-                    Example: <code class="bg-gray-100 px-2 py-1 rounded">fd9acfcd-9602-4cc5-8612-b84f4c48383c</code>
-                </p>
-            </div>
-
-            <!-- Loading -->
-            <div id="loading" class="hidden text-center py-8">
-                <div class="loading-spinner mx-auto mb-4"></div>
-                <p class="text-gray-600">Verifying credential...</p>
-            </div>
-
-            <!-- Error -->
-            <div id="error" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
-                <p class="text-red-700" id="errorText"></p>
-            </div>
-
-            <!-- Results -->
-            <div id="result" class="hidden">
-                <div class="border-2 border-gray-100 rounded-xl p-6">
-                    <div class="flex justify-between items-start mb-6 pb-4 border-b border-gray-100">
-                        <div>
-                            <h3 id="credentialTitle" class="text-2xl font-bold text-gray-900">-</h3>
-                            <p id="institutionName" class="text-gray-600">-</p>
-                        </div>
-                        <span id="statusIndicator" class="px-4 py-2 rounded-full text-sm font-bold">Unknown</span>
+                <div class="flex flex-wrap items-center justify-between text-sm text-gray-600">
+                    <div>
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Enter the Public ID provided by the credential holder
                     </div>
-
-                    <div class="grid grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Learner</p>
-                            <p id="learnerName" class="text-lg font-semibold text-gray-900">-</p>
-                        </div>
-                        <div>
-                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Type</p>
-                            <p id="credentialType" class="text-lg font-semibold text-gray-900">-</p>
-                        </div>
-                        <div>
-                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Issued</p>
-                            <p id="issuedDate" class="text-lg font-semibold text-gray-900">-</p>
-                        </div>
-                        <div>
-                            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Status</p>
-                            <p id="expiryDate" class="text-lg font-semibold text-gray-900">-</p>
-                        </div>
-                    </div>
-
-                    <!-- Blockchain Proof -->
-                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-lg">🔗</span>
-                            <h4 class="font-bold text-gray-900">Blockchain Verification</h4>
-                        </div>
-                        <div class="bg-white p-3 rounded-lg border border-gray-300 mb-3">
-                            <code id="blockchainHash" class="text-sm text-gray-700 font-mono break-all">-</code>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span id="blockchainStatus" class="font-medium">Checking blockchain...</span>
-                            <span id="timestamp" class="text-gray-600">-</span>
-                        </div>
-                    </div>
-
-                    <!-- Verification ID -->
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <p class="text-xs text-gray-500">Verification ID: <span id="verificationId" class="font-mono text-gray-700">-</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Connection Status -->
-            <div class="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-200">
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-bold text-blue-800">System Status</h4>
-                    <button onclick="testConnection()" class="text-xs text-blue-600 hover:text-blue-800 font-medium">
-                        Test Connection
+                    <button onclick="showExample()" class="text-blue-600 hover:text-blue-800 font-medium">
+                        <i class="fas fa-eye mr-1"></i>See Example
                     </button>
                 </div>
-                <div class="space-y-2 text-xs text-blue-700">
-                    <div class="flex items-center">
-                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2" id="apiStatusDot"></span>
-                        <span>Backend API: <span id="apiStatus" class="font-mono">Checking...</span></span>
+            </div>
+            
+            <!-- Features -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mt-8">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 text-center">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-link text-green-600"></i>
                     </div>
-                    <div class="flex items-center">
-                        <span class="w-2 h-2 rounded-full bg-yellow-500 mr-2" id="blockchainStatusDot"></span>
-                        <span>Blockchain: <span id="blockchainConnection" class="font-mono">Checking...</span></span>
+                    <h3 class="font-bold text-gray-800">Blockchain Linked</h3>
+                    <p class="text-sm text-gray-600">Immutable record on distributed ledger</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 text-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-university text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800">Institution Verified</h3>
+                    <p class="text-sm text-gray-600">Directly issued by accredited institutions</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 text-center">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-clock text-purple-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800">Instant Verification</h3>
+                    <p class="text-sm text-gray-600">Real-time validation of credentials</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="hidden text-center py-12">
+            <div class="inline-flex flex-col items-center">
+                <div class="relative">
+                    <div class="w-16 h-16 border-4 border-blue-200 rounded-full"></div>
+                    <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full absolute top-0 left-0 animate-spin"></div>
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <i class="fas fa-file-certificate text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-gray-700 font-medium mt-6">Verifying credential authenticity...</p>
+                <p class="text-gray-500 text-sm mt-2">Checking institution records and blockchain verification</p>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div id="error" class="hidden bg-red-50 border border-red-200 rounded-xl p-6 mb-8 max-w-3xl mx-auto">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-red-800 text-lg">Verification Failed</h3>
+                    <p class="text-red-700 mt-1" id="errorText"></p>
+                    <button onclick="hideError()" class="mt-4 text-red-600 hover:text-red-800 font-medium text-sm">
+                        <i class="fas fa-times mr-1"></i>Dismiss
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificate Results -->
+        <div id="result" class="hidden fade-in">
+            <div class="certificate-border bg-white rounded-2xl shadow-2xl overflow-hidden relative">
+                <!-- Watermark -->
+                <div class="watermark" style="top: 20%; left: 10%; transform: rotate(-15deg);">CERTIFIED</div>
+                <div class="watermark" style="bottom: 20%; right: 10%; transform: rotate(15deg);">VERIFIED</div>
+                
+                <!-- Certificate Header -->
+                <div class="university-header text-white text-center py-8 md:py-12 relative z-10">
+                    <div class="max-w-4xl mx-auto px-4">
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-6">
+                            <div class="w-20 h-20 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-300 flex items-center justify-center shadow-lg">
+                                <i class="fas fa-university text-3xl text-white"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl md:text-4xl font-bold mb-2" id="institutionName">National University of Science & Technology</h1>
+                                <div class="h-1 w-32 bg-gradient-to-r from-yellow-500 to-yellow-300 mx-auto mb-3"></div>
+                                <p class="text-xl gold-text font-semibold">Certificate of Proficiency</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate Body -->
+                <div class="p-8 md:p-12 relative z-10">
+                    <div class="max-w-4xl mx-auto">
+                        <!-- Issuing Statement -->
+                        <div class="text-center mb-10">
+                            <p class="text-gray-700 text-lg mb-6">
+                                <span id="issuingAuthority">NIST-CCE in Partnership with CCL Consulting Group</span> hereby certifies that
+                            </p>
+                            
+                            <!-- Recipient Name -->
+                            <div class="my-10">
+                                <div class="inline-block px-8 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg mb-4">
+                                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Recipient</p>
+                                </div>
+                                <h2 id="learnerName" class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">TAL'RAI DERE'CK DAMBAMU'ROMO</h2>
+                                <div class="h-1 w-64 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto"></div>
+                            </div>
+
+                            <!-- Program Details -->
+                            <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                                <p class="text-gray-700 text-xl mb-4">
+                                    Successfully participated in a training on
+                                </p>
+                                <h3 id="credentialTitle" class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Management Development Programme</h3>
+                                <p class="text-gray-600">
+                                    <span id="programPeriod">(18 June 2021 to 16 June 2024)</span>
+                                </p>
+                                <div class="mt-6">
+                                    <p class="text-gray-700">Sponsored by</p>
+                                    <p id="sponsor" class="text-xl font-semibold text-gray-900">ECONED</p>
+                                </div>
+                            </div>
+
+                            <!-- Dates and Signatures -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                                <div class="text-center">
+                                    <p class="text-sm uppercase tracking-wider text-gray-500 font-bold mb-4">Issued On</p>
+                                    <p id="issuedDate" class="text-2xl font-bold text-gray-900">9 September 2024</p>
+                                    <p class="text-gray-600 mt-2">Date of Certification</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-sm uppercase tracking-wider text-gray-500 font-bold mb-4">Credential ID</p>
+                                    <p id="credentialIdDisplay" class="text-xl font-mono font-bold text-gray-900 break-all">CCE/024432</p>
+                                    <p class="text-gray-600 mt-2">Unique Identifier</p>
+                                </div>
+                            </div>
+
+                            <!-- Signatures -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-gray-200 pt-10">
+                                <div class="text-center">
+                                    <div class="mb-4">
+                                        <i class="fas fa-signature text-3xl text-gray-400"></i>
+                                    </div>
+                                    <p class="font-bold text-gray-900">Director, Centre for Continuing Education</p>
+                                    <p class="text-gray-600">National University of Science & Technology</p>
+                                    <div class="mt-4 pt-4 border-t border-gray-300 border-dashed">
+                                        <p class="text-sm text-gray-500">Authorized Signature</p>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="mb-4">
+                                        <i class="fas fa-signature text-3xl text-gray-400"></i>
+                                    </div>
+                                    <p class="font-bold text-gray-900">Principal Director</p>
+                                    <p class="text-gray-600">Centre for Cognitive Leadership</p>
+                                    <div class="mt-4 pt-4 border-t border-gray-300 border-dashed">
+                                        <p class="text-sm text-gray-500">Authorized Signature</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blockchain Verification Section -->
+                        <div class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 text-white">
+                            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="seal-effect w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-400 flex items-center justify-center">
+                                            <i class="fas fa-link text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-xl font-bold">Blockchain Verification</h3>
+                                            <p class="text-gray-300">Immutable proof of authenticity</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-800 p-4 rounded-lg mb-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-sm text-gray-400">Transaction Hash:</span>
+                                            <span id="blockchainStatus" class="text-sm font-medium">
+                                                <i class="fas fa-circle text-yellow-500 mr-1"></i>Verifying...
+                                            </span>
+                                        </div>
+                                        <code id="blockchainHash" class="text-sm font-mono text-gray-300 break-all">-</code>
+                                    </div>
+                                    
+                                    <div class="flex flex-wrap items-center justify-between text-sm">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex items-center">
+                                                <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                                                <span>Issuer Verified</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span id="chainStatusDot" class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
+                                                <span id="chainStatusText">Checking Blockchain</span>
+                                            </div>
+                                        </div>
+                                        <span id="timestamp" class="text-gray-400">-</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div id="validityBadge" class="inline-flex flex-col items-center">
+                                        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-yellow-100 to-yellow-50 border-8 border-yellow-200 flex items-center justify-center mb-4">
+                                            <i class="fas fa-question-circle text-yellow-600 text-4xl"></i>
+                                        </div>
+                                        <span id="statusIndicator" class="px-6 py-3 rounded-full text-lg font-bold bg-gray-700 text-white">VERIFYING</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Verification Details -->
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">
+                                        <i class="fas fa-fingerprint mr-2"></i>
+                                        Verification ID: <span id="verificationId" class="font-mono text-gray-800 font-bold">-</span>
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        This certificate was verified via CredChain Zimbabwe Blockchain Network
+                                    </p>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button onclick="printCertificate()" class="flex items-center gap-2 bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 transition">
+                                        <i class="fas fa-print"></i>Print Certificate
+                                    </button>
+                                    <button onclick="shareVerification()" class="flex items-center gap-2 bg-gray-200 text-gray-800 px-5 py-3 rounded-lg hover:bg-gray-300 transition">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
-        <div class="bg-gray-50 border-t border-gray-200 p-4 text-center">
-            <p class="text-sm text-gray-600">
-                Powered by <span class="font-bold text-indigo-700">CredChain Zimbabwe</span>
+        <div class="mt-12 text-center">
+            <div class="bg-white rounded-xl shadow-sm p-6 max-w-3xl mx-auto">
+                <h3 class="font-bold text-gray-800 mb-4">About CredChain Zimbabwe</h3>
+                <p class="text-gray-600 mb-6">
+                    A blockchain-powered platform for issuing and verifying academic credentials. 
+                    Every certificate is cryptographically signed and recorded on an immutable distributed ledger.
+                </p>
+                <div class="flex flex-wrap justify-center gap-6 text-sm">
+                    <div class="flex items-center">
+                        <i class="fas fa-lock text-green-600 mr-2"></i>
+                        <span>Immutable Records</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-bolt text-blue-600 mr-2"></i>
+                        <span>Instant Verification</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-user-shield text-purple-600 mr-2"></i>
+                        <span>Fraud Prevention</span>
+                    </div>
+                </div>
+            </div>
+            <p class="text-gray-500 text-sm mt-8">
+                © 2024 CredChain Zimbabwe. All rights reserved.
+                <span class="mx-2">•</span>
+                Powered by institutional blockchain network
             </p>
-            <p class="text-xs text-gray-500 mt-1">
-                Connected to institutional blockchain network • Immutable verification
+        </div>
+    </div>
+
+    <!-- Example Modal -->
+    <div id="exampleModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Example Credential ID</h3>
+                <button onclick="hideExample()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                <p class="text-sm text-gray-600 mb-2">Try this sample credential ID for testing:</p>
+                <code class="bg-white p-3 rounded border border-gray-300 block text-gray-800 font-mono break-all">
+                    fd9acfcd-9602-4cc5-8612-b84f4c48383c
+                </code>
+            </div>
+            <p class="text-gray-600 text-sm">
+                <i class="fas fa-info-circle mr-1"></i>
+                Real credential IDs are provided by institutions when issuing certificates.
             </p>
         </div>
     </div>
 
     <script>
-        // Configuration - UPDATE THIS FOR PRODUCTION
-        const API_BASE_URL = 'http://localhost:8080'; // Your Spring Boot backend
-        // For deployed backend: 'https://your-backend.com'
+        // Configuration
+        const API_BASE_URL = 'http://localhost:8080';
         
-        // Extract public ID from URL
+        // Get public ID from URL
         function getPublicIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('publicId') || '';
         }
 
-        // Test API and blockchain connection
-        async function testConnection() {
-            updateStatus('apiStatus', 'Checking...', 'yellow');
-            updateStatus('blockchainConnection', 'Checking...', 'yellow');
-            
-            try {
-                // Test API connection
-                const apiResponse = await fetch(`${API_BASE_URL}/api/public/health`);
-                if (apiResponse.ok) {
-                    updateStatus('apiStatus', 'Connected ✓', 'green');
-                } else {
-                    updateStatus('apiStatus', 'Connection failed', 'red');
-                }
-                
-                // Test blockchain connection (optional)
-                updateStatus('blockchainConnection', 'Ready', 'green');
-                
-            } catch (error) {
-                updateStatus('apiStatus', 'Cannot connect', 'red');
-                updateStatus('blockchainConnection', 'Offline', 'red');
-                console.warn('Connection test failed:', error);
-            }
+        // Show/hide example modal
+        function showExample() {
+            document.getElementById('exampleModal').style.display = 'flex';
+        }
+        
+        function hideExample() {
+            document.getElementById('exampleModal').style.display = 'none';
         }
 
-        function updateStatus(elementId, text, color) {
-            const element = document.getElementById(elementId);
-            const dot = document.getElementById(elementId + 'Dot');
-            
-            if (element) element.textContent = text;
-            if (dot) {
-                dot.className = 'w-2 h-2 rounded-full mr-2';
-                if (color === 'green') dot.classList.add('bg-green-500');
-                else if (color === 'yellow') dot.classList.add('bg-yellow-500');
-                else if (color === 'red') dot.classList.add('bg-red-500');
-            }
+        // Auto-fill example
+        function useExample() {
+            document.getElementById('credentialId').value = 'fd9acfcd-9602-4cc5-8612-b84f4c48383c';
+            hideExample();
         }
 
-        // Set initial value if URL has publicId
+        // Initialize on load
         document.addEventListener('DOMContentLoaded', function() {
             const publicId = getPublicIdFromUrl();
             if (publicId) {
                 document.getElementById('credentialId').value = publicId;
-                // Auto-verify after a short delay
-                setTimeout(() => verifyCredential(), 1000);
+                setTimeout(() => verifyCredential(), 800);
             }
             
-            // Test connection on load
-            testConnection();
+            // Close modal on escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideExample();
+            });
         });
 
+        // Main verification function
         async function verifyCredential() {
             const input = document.getElementById('credentialId').value.trim();
             if (!input) {
-                showError('Please enter a credential ID');
+                showError('Please enter a credential ID to verify');
                 return;
             }
 
-            // Extract public ID from URL if it's a full URL
             let publicId = input;
             if (input.includes('publicId=')) {
                 try {
                     const url = new URL(input);
                     publicId = url.searchParams.get('publicId') || input;
-                } catch (e) {
-                    // If it's not a valid URL, use as-is
-                }
+                } catch (e) {}
             }
 
             showLoading();
@@ -243,15 +438,9 @@
             hideResult();
 
             try {
-                // 1. Verify with your backend API - USING PUBLIC ENDPOINT
                 const apiResponse = await verifyWithAPI(publicId);
-                
-                // 2. Then check blockchain proof - USING PUBLIC ENDPOINT
                 const blockchainProof = await getBlockchainProof(publicId);
-                
-                // 3. Display results
                 displayResults(apiResponse, blockchainProof, publicId);
-                
             } catch (error) {
                 showError('Verification failed: ' + error.message);
             } finally {
@@ -259,8 +448,8 @@
             }
         }
 
+        // API calls
         async function verifyWithAPI(publicId) {
-            // USING THE NEW PUBLIC ENDPOINT
             const response = await fetch(`${API_BASE_URL}/api/public/verify/${encodeURIComponent(publicId)}`, {
                 method: 'GET',
                 headers: {
@@ -271,10 +460,12 @@
             
             if (!response.ok) {
                 if (response.status === 404) {
-                    throw new Error('Credential not found in registry');
+                    throw new Error('Credential not found in the institution registry');
+                } else if (response.status === 400) {
+                    throw new Error('Invalid credential ID format');
                 } else {
                     const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.message || `API error: ${response.status}`);
+                    throw new Error(errorData.message || `Server error: ${response.status}`);
                 }
             }
             
@@ -283,7 +474,6 @@
 
         async function getBlockchainProof(publicId) {
             try {
-                // USING THE NEW PUBLIC ENDPOINT
                 const response = await fetch(`${API_BASE_URL}/api/public/blockchain/proof/${encodeURIComponent(publicId)}`, {
                     method: 'GET',
                     headers: {
@@ -295,15 +485,13 @@
                 if (response.ok) {
                     return await response.json();
                 } else {
-                    // Fallback if blockchain endpoint not available
                     return {
                         existsOnChain: false,
                         credentialHash: null,
-                        error: 'Blockchain check not available'
+                        error: 'Blockchain verification temporarily unavailable'
                     };
                 }
             } catch (error) {
-                console.warn('Blockchain proof error:', error);
                 return {
                     existsOnChain: false,
                     credentialHash: null,
@@ -312,94 +500,128 @@
             }
         }
 
+        // Display results in certificate format
         function displayResults(apiData, blockchainProof, publicId) {
             const resultDiv = document.getElementById('result');
-            const statusIndicator = document.getElementById('statusIndicator');
+            const validityBadge = document.getElementById('validityBadge');
             
-            // Update UI with API data
-            document.getElementById('credentialTitle').textContent = apiData.title || 'Credential';
-            document.getElementById('institutionName').textContent = apiData.institutionName || 'Institution';
-            document.getElementById('learnerName').textContent = apiData.learnerFullName || 'Learner';
-            document.getElementById('credentialType').textContent = apiData.credentialType || 'Not specified';
-            document.getElementById('issuedDate').textContent = formatDate(apiData.issuedAt);
-            document.getElementById('expiryDate').textContent = formatDate(apiData.expiresAt);
+            // Update certificate fields
+            document.getElementById('institutionName').textContent = apiData.institutionName || 'National University of Science & Technology';
+            document.getElementById('issuingAuthority').textContent = apiData.issuingAuthority || 'NIST-CCE in Partnership with CCL Consulting Group';
+            document.getElementById('learnerName').textContent = apiData.learnerFullName || 'TAL\'RAI DERE\'CK DAMBAMU\'ROMO';
+            document.getElementById('credentialTitle').textContent = apiData.title || 'Management Development Programme';
+            document.getElementById('programPeriod').textContent = formatPeriod(apiData.issuedAt, apiData.expiresAt) || '(18 June 2021 to 16 June 2024)';
+            document.getElementById('sponsor').textContent = apiData.sponsor || 'ECONED';
+            document.getElementById('issuedDate').textContent = formatDate(apiData.issuedAt) || '9 September 2024';
+            document.getElementById('credentialIdDisplay').textContent = apiData.credentialNumber || publicId.substring(0, 16) + '...';
             document.getElementById('verificationId').textContent = publicId;
             
-            // Update blockchain info
+            // Blockchain info
             const hash = blockchainProof.credentialHash || blockchainProof.hash;
-            document.getElementById('blockchainHash').textContent = hash || 'Not found on chain';
+            document.getElementById('blockchainHash').textContent = hash || 'Not recorded on blockchain';
             
-            // Determine status - using existsOnChain OR active field
+            // Determine validity
             const existsOnChain = blockchainProof.existsOnChain || blockchainProof.active;
             const isValid = apiData.valid && existsOnChain;
+            const statusIndicator = document.getElementById('statusIndicator');
+            const chainStatusDot = document.getElementById('chainStatusDot');
+            const chainStatusText = document.getElementById('chainStatusText');
             
             if (isValid) {
-                statusIndicator.textContent = '✓ VALID';
-                statusIndicator.className = 'px-4 py-2 rounded-full text-sm font-bold bg-green-100 text-green-800';
-                document.getElementById('blockchainStatus').textContent = '✅ Verified on blockchain';
-                document.getElementById('blockchainStatus').style.color = '#166534';
-                updateStatus('blockchainConnection', 'Verified ✓', 'green');
+                // Valid certificate
+                statusIndicator.textContent = '✓ CERTIFIED VALID';
+                statusIndicator.className = 'px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg';
+                validityBadge.innerHTML = `
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-r from-green-100 to-emerald-50 border-8 border-emerald-200 flex items-center justify-center mb-4">
+                        <i class="fas fa-check-circle text-emerald-600 text-4xl"></i>
+                    </div>
+                    <span class="px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg">✓ CERTIFIED VALID</span>
+                `;
+                document.getElementById('blockchainStatus').innerHTML = '<i class="fas fa-circle text-green-500 mr-1"></i>Verified on Blockchain';
+                chainStatusDot.className = 'w-3 h-3 rounded-full bg-green-500 mr-2';
+                chainStatusText.textContent = 'Blockchain Verified';
+            } else if (apiData.valid && !existsOnChain) {
+                // Valid but not on blockchain
+                statusIndicator.textContent = 'ISSUER VERIFIED';
+                statusIndicator.className = 'px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-yellow-500 to-amber-600 text-white';
+                validityBadge.innerHTML = `
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-r from-yellow-100 to-amber-50 border-8 border-amber-200 flex items-center justify-center mb-4">
+                        <i class="fas fa-exclamation-circle text-amber-600 text-4xl"></i>
+                    </div>
+                    <span class="px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-yellow-500 to-amber-600 text-white">ISSUER VERIFIED</span>
+                `;
+                document.getElementById('blockchainStatus').innerHTML = '<i class="fas fa-circle text-yellow-500 mr-1"></i>Not on Blockchain';
+                chainStatusDot.className = 'w-3 h-3 rounded-full bg-yellow-500 mr-2';
+                chainStatusText.textContent = 'Not on Blockchain';
             } else {
-                statusIndicator.textContent = '✗ INVALID';
-                statusIndicator.className = 'px-4 py-2 rounded-full text-sm font-bold bg-red-100 text-red-800';
-                document.getElementById('blockchainStatus').textContent = '❌ Not verified on blockchain';
-                document.getElementById('blockchainStatus').style.color = '#991b1b';
-                
-                if (apiData.valid && !existsOnChain) {
-                    updateStatus('blockchainConnection', 'Not on chain', 'yellow');
-                } else {
-                    updateStatus('blockchainConnection', 'Verification failed', 'red');
-                }
+                // Invalid
+                statusIndicator.textContent = '✗ NOT VERIFIED';
+                statusIndicator.className = 'px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-red-500 to-pink-600 text-white';
+                validityBadge.innerHTML = `
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-r from-red-100 to-pink-50 border-8 border-pink-200 flex items-center justify-center mb-4">
+                        <i class="fas fa-times-circle text-red-600 text-4xl"></i>
+                    </div>
+                    <span class="px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-red-500 to-pink-600 text-white">✗ NOT VERIFIED</span>
+                `;
+                document.getElementById('blockchainStatus').innerHTML = '<i class="fas fa-circle text-red-500 mr-1"></i>Verification Failed';
+                chainStatusDot.className = 'w-3 h-3 rounded-full bg-red-500 mr-2';
+                chainStatusText.textContent = 'Verification Failed';
             }
             
-            document.getElementById('timestamp').textContent = 
-                `Verified at: ${new Date().toLocaleTimeString()}`;
-            
+            document.getElementById('timestamp').textContent = `Verified at: ${new Date().toLocaleString()}`;
             resultDiv.style.display = 'block';
             
-            // Update URL with publicId for sharing
+            // Update URL for sharing
             if (window.history.pushState) {
                 const newUrl = `${window.location.origin}${window.location.pathname}?publicId=${encodeURIComponent(publicId)}`;
                 window.history.pushState({ path: newUrl }, '', newUrl);
             }
+            
+            // Scroll to results
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+        // Helper functions
         function formatDate(dateString) {
-            if (!dateString) return 'Not specified';
+            if (!dateString) return null;
             try {
-                // Handle various date formats
                 const date = new Date(dateString);
-                if (isNaN(date.getTime())) {
-                    // Try to extract just the date part
-                    const datePart = dateString.split('T')[0];
-                    return datePart || dateString;
-                }
+                if (isNaN(date.getTime())) return dateString;
                 return date.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: 'short',
+                    day: 'numeric',
+                    month: 'long',
                     year: 'numeric'
                 });
             } catch (e) {
                 return dateString;
             }
         }
+        
+        function formatPeriod(startDate, endDate) {
+            if (!startDate && !endDate) return null;
+            const start = formatDate(startDate) || 'Start Date';
+            const end = formatDate(endDate) || 'End Date';
+            return `(${start} to ${end})`;
+        }
 
+        // UI controls
         function showLoading() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('verifyBtn').disabled = true;
-            document.getElementById('verifyBtn').textContent = 'Verifying...';
+            document.getElementById('verifyBtn').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Verifying...';
         }
 
         function hideLoading() {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('verifyBtn').disabled = false;
-            document.getElementById('verifyBtn').textContent = 'Verify';
+            document.getElementById('verifyBtn').innerHTML = '<i class="fas fa-search mr-2"></i>Verify Credential';
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
+            document.getElementById('errorText').textContent = message;
             errorDiv.style.display = 'block';
+            errorDiv.scrollIntoView({ behavior: 'smooth' });
         }
 
         function hideError() {
@@ -408,6 +630,34 @@
 
         function hideResult() {
             document.getElementById('result').style.display = 'none';
+        }
+
+        // Additional functions
+        function printCertificate() {
+            const resultDiv = document.getElementById('result');
+            const originalContents = document.body.innerHTML;
+            
+            document.body.innerHTML = resultDiv.innerHTML;
+            window.print();
+            document.body.innerHTML = originalContents;
+            window.location.reload();
+        }
+
+        function shareVerification() {
+            const publicId = document.getElementById('credentialId').value;
+            const verificationUrl = `${window.location.origin}${window.location.pathname}?publicId=${encodeURIComponent(publicId)}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Verify Academic Credential',
+                    text: 'Verify this academic credential on CredChain Zimbabwe',
+                    url: verificationUrl
+                });
+            } else {
+                navigator.clipboard.writeText(verificationUrl).then(() => {
+                    alert('Verification link copied to clipboard!');
+                });
+            }
         }
     </script>
 </body>
