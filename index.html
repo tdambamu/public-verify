@@ -7,89 +7,109 @@
 
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --ink:#0b1220;
-      --muted:#51607a;
-      --brand:#1d4ed8;
-      --brand2:#3b82f6;
+      --muted:#5b6a86;
+      --blue1:#3b82f6;
+      --blue2:#1d4ed8;
+      --gold1:#caa34d;
+      --gold2:#f6d77a;
+      --paper1:#fbfaf6;
+      --paper2:#f6f4ee;
+      --line:#e6e1d2;
       --good:#16a34a;
       --warn:#f59e0b;
       --bad:#ef4444;
-      --paper:#fbfaf6;
-      --paper2:#f6f4ee;
-      --gold1:#caa34d;
-      --gold2:#f6d77a;
-      --line:#e6e1d2;
     }
 
-    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    body { font-family: 'Inter', sans-serif; }
 
-    /* Background (premium + subtle) */
-    .bg-premium{
+    /* Premium page background */
+    .bg-premium {
       background:
-        radial-gradient(1200px 600px at 20% 10%, rgba(59,130,246,.18), transparent 55%),
-        radial-gradient(900px 500px at 90% 30%, rgba(202,163,77,.16), transparent 60%),
+        radial-gradient(900px 520px at 15% 10%, rgba(59,130,246,.18), transparent 55%),
+        radial-gradient(900px 520px at 85% 22%, rgba(202,163,77,.16), transparent 60%),
         linear-gradient(180deg, #f8fafc 0%, #f3f4f6 100%);
-      min-height: 100vh;
     }
 
-    /* Top search bar card (glass-ish) */
-    .topbar{
-      background: rgba(255,255,255,.78);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.55);
+    /* Upgraded borders / shadows */
+    .simple-border {
+      border: 1px solid rgba(15,23,42,.10);
       box-shadow:
-        0 20px 60px rgba(15,23,42,.08),
-        0 6px 16px rgba(15,23,42,.06);
+        0 28px 90px rgba(2,6,23,.12),
+        0 10px 22px rgba(2,6,23,.08);
     }
 
-    /* Certificate frame */
+    .header-blue {
+      background: linear-gradient(135deg, var(--blue1) 0%, var(--blue2) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .header-blue:before{
+      content:"";
+      position:absolute; inset:-60px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.22), transparent 40%),
+        radial-gradient(circle at 80% 10%, rgba(255,255,255,.14), transparent 44%),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.10), transparent 50%);
+      transform: rotate(-10deg);
+      pointer-events:none;
+    }
+
+    .certificate-badge {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    /* Decorative certificate frame */
     .cert-wrap{
       position: relative;
       border-radius: 18px;
       overflow: hidden;
-      box-shadow:
-        0 40px 110px rgba(2,6,23,.15),
-        0 10px 26px rgba(2,6,23,.10);
-      background: var(--paper);
+      background: var(--paper1);
     }
 
-    /* Paper texture + watermark */
     .cert-paper{
       position: relative;
       background:
-        radial-gradient(700px 420px at 15% 15%, rgba(29,78,216,.07), transparent 60%),
+        radial-gradient(700px 420px at 15% 15%, rgba(29,78,216,.06), transparent 60%),
         radial-gradient(650px 420px at 85% 25%, rgba(202,163,77,.10), transparent 60%),
-        linear-gradient(180deg, var(--paper) 0%, var(--paper2) 100%);
+        linear-gradient(180deg, var(--paper1) 0%, var(--paper2) 100%);
     }
+
+    /* subtle paper texture */
     .cert-paper:before{
       content:"";
       position:absolute; inset:0;
       background:
         repeating-linear-gradient(0deg, rgba(10,18,32,.02) 0, rgba(10,18,32,.02) 1px, transparent 1px, transparent 6px),
         repeating-linear-gradient(90deg, rgba(10,18,32,.015) 0, rgba(10,18,32,.015) 1px, transparent 1px, transparent 7px);
-      opacity:.35;
+      opacity:.32;
       pointer-events:none;
-    }
-    .cert-paper:after{
-      content:"";
-      position:absolute; inset:-40px;
-      background:
-        radial-gradient(circle at 50% 40%, rgba(29,78,216,.10), transparent 52%),
-        radial-gradient(circle at 50% 40%, rgba(202,163,77,.12), transparent 58%);
-      filter: blur(0px);
-      opacity:.22;
-      pointer-events:none;
-      transform: rotate(-8deg);
     }
 
-    /* Double border + inner stroke */
+    /* watermark */
+    .watermark{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      opacity:.06;
+      transform: rotate(-14deg);
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      letter-spacing: .25em;
+      font-size: clamp(54px, 8vw, 92px);
+      color: var(--ink);
+      text-transform: uppercase;
+      user-select:none;
+    }
+
+    /* double border */
     .cert-border{
       position:absolute; inset:18px;
       border-radius: 14px;
@@ -104,7 +124,7 @@
       pointer-events:none;
     }
 
-    /* Corner ornaments (simple SVG) */
+    /* corner ornaments */
     .corner{
       position:absolute;
       width:72px; height:72px;
@@ -112,52 +132,51 @@
       pointer-events:none;
       filter: drop-shadow(0 2px 2px rgba(2,6,23,.12));
     }
-    .corner.tl{top:18px; left:18px;}
-    .corner.tr{top:18px; right:18px; transform: scaleX(-1);}
-    .corner.bl{bottom:18px; left:18px; transform: scaleY(-1);}
-    .corner.br{bottom:18px; right:18px; transform: scale(-1);}
+    .corner.tl{top:16px; left:16px;}
+    .corner.tr{top:16px; right:16px; transform: scaleX(-1);}
+    .corner.bl{bottom:16px; left:16px; transform: scaleY(-1);}
+    .corner.br{bottom:16px; right:16px; transform: scale(-1);}
 
     /* Typography */
-    .font-cert-title{font-family:'Cinzel', serif;}
-    .font-script{font-family:'Great Vibes', cursive;}
+    .cert-title-font{ font-family: 'Cinzel', serif; }
+    .cert-name-font{ font-family: 'Great Vibes', cursive; }
 
-    /* Gold divider */
-    .gold-rule{
+    .divider {
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(202,163,77,.95), transparent);
     }
 
-    /* Fancy badge */
-    .shield{
-      display:inline-flex; align-items:center; gap:.45rem;
-      padding:.35rem .6rem;
+    /* premium chips */
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      padding:.35rem .65rem;
       border-radius: 999px;
       border: 1px solid rgba(15,23,42,.10);
-      background: rgba(255,255,255,.72);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 8px 18px rgba(2,6,23,.06);
+      background: rgba(255,255,255,.74);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 18px rgba(2,6,23,.06);
       font-size: 12px;
       color: rgba(11,18,32,.92);
       white-space: nowrap;
     }
-    .dot{width:8px;height:8px;border-radius:999px;}
-    .dot.good{background:var(--good);}
-    .dot.warn{background:var(--warn);}
-    .dot.bad{background:var(--bad);}
 
-    /* Embossed seal */
+    /* embossed seal */
     .seal{
-      width: 92px; height: 92px;
+      width: 86px; height: 86px;
       border-radius: 999px;
       background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.0) 42%),
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.0) 44%),
         radial-gradient(circle at 60% 70%, rgba(0,0,0,.06), transparent 55%),
         linear-gradient(135deg, rgba(246,215,122,.95), rgba(202,163,77,.95));
       box-shadow:
         inset 0 0 0 3px rgba(255,255,255,.35),
-        inset 0 0 0 10px rgba(202,163,77,.25),
+        inset 0 0 0 10px rgba(202,163,77,.22),
         0 18px 26px rgba(2,6,23,.10);
-      display:flex; align-items:center; justify-content:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       position: relative;
     }
     .seal:after{
@@ -168,16 +187,17 @@
       opacity:.7;
     }
 
-    /* Small code box */
-    .codebox{
-      border: 1px solid rgba(15,23,42,.10);
-      background: rgba(255,255,255,.75);
-      border-radius: 12px;
-      padding: .75rem .9rem;
-      box-shadow: 0 10px 20px rgba(2,6,23,.05);
+    /* Better top header card */
+    .topbar{
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.55);
+      box-shadow:
+        0 20px 60px rgba(15,23,42,.08),
+        0 6px 16px rgba(15,23,42,.06);
     }
 
-    /* Loading spinner */
+    /* Loading */
     .spin-ring{
       width: 54px; height: 54px;
       border-radius: 999px;
@@ -186,106 +206,101 @@
       animation: spin 0.9s linear infinite;
     }
     @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes fadeIn{
-      from{opacity:0; transform: translateY(10px)}
-      to{opacity:1; transform: translateY(0)}
-    }
-    .fade-in{animation: fadeIn .35s ease-out;}
 
-    /* Print */
-    .print-only{display:none;}
-    @media print{
-      .no-print{display:none !important;}
-      .print-only{display:block;}
-      body{background:white !important; padding:0 !important; margin:0 !important;}
-      .bg-premium{background:white !important;}
-      .cert-wrap{box-shadow:none !important; border-radius:0 !important;}
-      .cert-border, .cert-border2{display:none;}
-      .corner{display:none;}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeIn 0.35s ease-out; }
+
+    .print-only { display: none; }
+    @media print {
+      .no-print { display: none !important; }
+      .print-only { display: block; }
+      body { background: white !important; padding: 0 !important; margin: 0 !important; }
+      .simple-border { border: none; box-shadow: none; }
+      .cert-border, .cert-border2, .corner, .watermark { display:none; }
+      .header-blue{ background: #1d4ed8 !important; }
       @page { size: A4; margin: 10mm; }
     }
   </style>
 </head>
 
-<body class="bg-premium p-4">
-  <!-- Header / Search -->
-  <div class="no-print max-w-5xl mx-auto mb-8">
+<body class="bg-premium min-h-screen p-4">
+  <!-- Header -->
+  <div class="no-print max-w-4xl mx-auto mb-8">
     <div class="topbar rounded-2xl p-6">
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl flex items-center justify-center"
-               style="background: linear-gradient(135deg, var(--brand2), var(--brand)); box-shadow: 0 10px 20px rgba(29,78,216,.25);">
-            <i class="fas fa-shield-halved text-white text-lg"></i>
+               style="background: linear-gradient(135deg, var(--blue1), var(--blue2)); box-shadow: 0 10px 20px rgba(29,78,216,.25);">
+            <i class="fas fa-shield-check text-white text-lg"></i>
           </div>
           <div>
             <h1 class="text-xl font-bold text-gray-900">CredChain Verification</h1>
-            <p class="text-gray-600 text-sm">Instant certificate validation • registry + blockchain</p>
+            <p class="text-gray-600 text-sm">Verify academic credentials (registry + blockchain)</p>
           </div>
         </div>
 
-        <div class="flex-1 w-full md:max-w-xl">
+        <div class="flex-1 max-w-md w-full">
           <div class="relative">
+            <i class="fas fa-magnifying-glass text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
             <input
               id="credentialId"
               type="text"
-              placeholder="Paste credential ID or verification link…"
-              class="w-full rounded-xl px-4 py-3 pr-28 focus:outline-none"
-              style="border:1px solid rgba(15,23,42,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);"
+              placeholder="Enter credential ID..."
+              class="w-full rounded-xl px-11 py-3 focus:outline-none"
+              style="border:1px solid rgba(15,23,42,.12); background: rgba(255,255,255,.9);"
               value=""
             />
             <button
               onclick="verifyCredential()"
               class="absolute right-2 top-2 text-white px-5 py-2 rounded-xl transition text-sm font-semibold"
-              style="background: linear-gradient(135deg, var(--brand2), var(--brand)); box-shadow: 0 12px 18px rgba(29,78,216,.22);"
+              style="background: linear-gradient(135deg, var(--blue1), var(--blue2)); box-shadow: 0 12px 18px rgba(29,78,216,.22);"
               id="verifyBtn"
             >
               Verify
             </button>
           </div>
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
-            <p class="text-xs text-gray-500">
-              Example:
-              <code class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded">fd9acfcd-9602-4cc5-8612-b84f4c48383c</code>
-              <button onclick="useExample()" class="text-blue-700 hover:text-blue-900 ml-2 font-semibold">Try it</button>
-            </p>
-            <p class="text-xs text-gray-500 flex items-center gap-2">
-              <i class="fas fa-lock text-gray-400"></i>
-              No login needed • public verification only
-            </p>
-          </div>
+
+          <p class="text-xs text-gray-500 mt-2">
+            Example: <code class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded">fd9acfcd-9602-4cc5-8612-b84f4c48383c</code>
+            <button onclick="useExample()" class="text-blue-700 hover:text-blue-900 ml-2 font-semibold">Try it</button>
+          </p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Main -->
-  <div class="max-w-4xl mx-auto">
+  <!-- Main Content -->
+  <div class="max-w-3xl mx-auto">
     <!-- Loading -->
-    <div id="loading" class="hidden text-center py-14">
+    <div id="loading" class="hidden text-center py-12">
       <div class="inline-flex flex-col items-center">
         <div class="spin-ring mb-4"></div>
         <p class="text-gray-800 font-semibold">Verifying credential…</p>
-        <p class="text-gray-500 text-sm mt-1">Checking issuer registry and blockchain proof</p>
+        <p class="text-gray-500 text-sm mt-1">Checking registry and blockchain proof</p>
       </div>
     </div>
 
     <!-- Error -->
     <div id="error" class="hidden fade-in mb-6 rounded-2xl p-4"
          style="background: rgba(254,242,242,.9); border: 1px solid rgba(239,68,68,.22); box-shadow: 0 12px 28px rgba(239,68,68,.08);">
-      <div class="flex items-start gap-3">
-        <i class="fas fa-triangle-exclamation text-red-500 mt-1"></i>
-        <div class="flex-1">
+      <div class="flex items-start">
+        <i class="fas fa-exclamation-triangle text-red-500 mt-0.5 mr-3"></i>
+        <div>
           <p class="text-red-800 font-semibold" id="errorText"></p>
           <button onclick="hideError()" class="text-red-700 hover:text-red-900 text-sm mt-2 font-semibold">Dismiss</button>
         </div>
       </div>
     </div>
 
-    <!-- Result -->
+    <!-- Certificate Result -->
     <div id="result" class="hidden fade-in">
-      <div class="cert-wrap">
+      <div class="simple-border rounded-2xl overflow-hidden cert-wrap">
         <div class="cert-paper">
-          <!-- ornaments -->
+          <div class="watermark">CREDCHAIN</div>
+
           <svg class="corner tl" viewBox="0 0 100 100" aria-hidden="true">
             <path d="M8,52 C22,22 42,12 58,10 C72,8 84,12 92,18" fill="none" stroke="rgba(202,163,77,.9)" stroke-width="4" stroke-linecap="round"/>
             <path d="M10,62 C18,40 36,28 52,24" fill="none" stroke="rgba(15,23,42,.18)" stroke-width="3" stroke-linecap="round"/>
@@ -314,215 +329,143 @@
           <div class="cert-border"></div>
           <div class="cert-border2"></div>
 
-          <div class="relative px-6 sm:px-12 py-10 sm:py-12">
-            <!-- Top row (logos + heading) -->
-            <div class="flex items-center justify-between gap-4">
-              <!-- Left logo placeholder -->
-              <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
-                     style="background: rgba(29,78,216,.08); border:1px solid rgba(29,78,216,.18);">
-                  <span class="font-cert-title font-bold" style="color: var(--brand);">NUST</span>
-                </div>
-                <div class="hidden sm:block">
-                  <p class="text-sm font-semibold" style="color: var(--ink);">National University of</p>
-                  <p class="text-sm font-semibold" style="color: var(--ink);">Science & Technology</p>
-                </div>
-              </div>
+          <!-- Certificate Header -->
+          <div class="header-blue text-white p-8 text-center relative">
+            <div class="inline-flex items-center gap-2 bg-white bg-opacity-10 px-3 py-1 rounded-full mb-4">
+              <i class="fas fa-shield-check"></i>
+              <span class="text-xs font-semibold tracking-wider uppercase opacity-90">CREDCHAIN VERIFIED</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2 cert-title-font tracking-wide">CERTIFICATE OF GRADUATION</h1>
+            <p class="text-blue-100">Awarded To</p>
+          </div>
 
-              <div class="text-center">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full"
-                     style="background: rgba(29,78,216,.08); border:1px solid rgba(29,78,216,.12);">
-                  <i class="fas fa-shield-check" style="color: var(--brand);"></i>
-                  <span class="text-xs font-bold tracking-widest uppercase" style="color: var(--brand);">CREDCHAIN VERIFIED</span>
+          <!-- Certificate Body -->
+          <div class="p-8 relative">
+            <!-- Status Badge (Web only) -->
+            <div class="no-print mb-6">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div class="chip">
+                  <div id="statusDot" class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                  <span id="statusText" class="font-semibold text-gray-800">Verified</span>
                 </div>
-              </div>
 
-              <!-- Right logo placeholder -->
-              <div class="flex items-center gap-3">
-                <div class="hidden sm:block text-right">
-                  <p class="text-sm font-semibold" style="color: var(--ink);">CCE Consulting</p>
-                  <p class="text-sm font-semibold" style="color: var(--ink);">Group</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
-                     style="background: rgba(202,163,77,.10); border:1px solid rgba(202,163,77,.22);">
-                  <span class="font-cert-title font-bold" style="color: #9a7b2f;">CCE</span>
-                </div>
+                <button onclick="printCertificate()" class="chip font-semibold text-blue-700 hover:text-blue-900">
+                  <i class="fas fa-print"></i> Print
+                </button>
               </div>
             </div>
 
-            <div class="mt-8 text-center">
-              <h1 class="font-cert-title text-3xl sm:text-4xl font-bold tracking-wide" style="color: var(--ink);">
-                CERTIFICATE OF PROFICIENCY
-              </h1>
-              <p class="mt-2 text-sm sm:text-base" style="color: var(--muted);">
-                This is to certify that the individual named below has successfully completed the stated programme.
-              </p>
-
-              <div class="mt-6 gold-rule mx-auto w-56"></div>
+            <!-- Recipient Name -->
+            <div class="text-center mb-8">
+              <h2 id="learnerName" class="cert-name-font text-6xl leading-tight text-gray-900 mb-4">-</h2>
+              <div class="divider w-64 mx-auto"></div>
             </div>
 
-            <!-- Status shields (web only) -->
-            <div class="no-print mt-8 flex flex-wrap items-center justify-center gap-3">
-              <span class="shield" id="badgeRegistry">
-                <span class="dot good" id="dotRegistry"></span>
-                <span class="font-semibold">Registry</span>
-                <span class="opacity-70" id="txtRegistry">Verified</span>
-              </span>
+            <!-- Credential Details -->
+            <div class="text-center mb-10">
+              <p class="text-gray-600 mb-1 tracking-widest text-xs uppercase">Graduating From</p>
+              <h3 id="credentialTitle" class="text-xl font-bold text-gray-900 mb-4 cert-title-font">-</h3>
 
-              <span class="shield" id="badgeOnChain">
-                <span class="dot warn" id="dotOnChain"></span>
-                <span class="font-semibold">On-Chain</span>
-                <span class="opacity-70" id="txtOnChain">Checking…</span>
-              </span>
-
-              <span class="shield" id="badgeIntegrity">
-                <span class="dot warn" id="dotIntegrity"></span>
-                <span class="font-semibold">Integrity</span>
-                <span class="opacity-70" id="txtIntegrity">Checking…</span>
-              </span>
-
-              <button onclick="printCertificate()"
-                      class="shield hover:shadow-md transition font-semibold"
-                      style="border:1px solid rgba(29,78,216,.22); color: var(--brand);">
-                <i class="fas fa-print"></i> Print
-              </button>
-            </div>
-
-            <!-- Recipient -->
-            <div class="mt-10 text-center">
-              <p class="text-sm uppercase tracking-widest" style="color: rgba(81,96,122,.9);">
-                Presented To
-              </p>
-              <h2 id="learnerName" class="font-script text-5xl sm:text-6xl mt-3" style="color: var(--ink);">
-                —
-              </h2>
-              <div class="mt-5 gold-rule mx-auto w-64"></div>
-            </div>
-
-            <!-- Programme -->
-            <div class="mt-10 text-center max-w-2xl mx-auto">
-              <p class="text-sm uppercase tracking-widest" style="color: rgba(81,96,122,.9);">
-                Programme / Qualification
-              </p>
-              <h3 id="credentialTitle" class="mt-2 text-xl sm:text-2xl font-semibold" style="color: var(--ink);">
-                —
-              </h3>
-
-              <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-6">
-                <div class="text-center">
-                  <p class="text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.85);">Issued by</p>
-                  <p id="institutionName" class="mt-1 font-semibold" style="color: var(--ink);">—</p>
+              <div class="flex flex-col sm:flex-row justify-center gap-6 sm:gap-10 mb-6">
+                <div>
+                  <p class="text-xs uppercase tracking-widest text-gray-600">Issued by</p>
+                  <p id="institutionName" class="font-semibold text-gray-900 mt-1">-</p>
                 </div>
-                <div class="hidden sm:block" style="width:1px;height:32px;background: rgba(15,23,42,.12);"></div>
-                <div class="text-center">
-                  <p class="text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.85);">Date Issued</p>
-                  <p id="issuedDate" class="mt-1 font-semibold" style="color: var(--ink);">—</p>
+                <div class="hidden sm:block" style="width:1px;height:34px;background: rgba(15,23,42,.12);"></div>
+                <div>
+                  <p class="text-xs uppercase tracking-widest text-gray-600">Date</p>
+                  <p id="issuedDate" class="font-semibold text-gray-900 mt-1">-</p>
                 </div>
               </div>
             </div>
 
             <!-- Divider -->
-            <div class="mt-10 gold-rule mx-auto w-full max-w-3xl"></div>
+            <div class="divider my-8"></div>
 
-            <!-- Details + Seal -->
-            <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-              <div class="md:col-span-2 space-y-4">
-                <div class="codebox">
-                  <p class="text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.9);">Credential ID</p>
-                  <p id="credentialIdDisplay" class="mt-1 font-mono text-sm font-semibold break-all" style="color: var(--ink);">—</p>
+            <!-- Verification Details + Seal -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start mb-8">
+              <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white bg-opacity-70 rounded-xl p-4" style="border:1px solid rgba(15,23,42,.10);">
+                  <p class="text-xs uppercase tracking-widest text-gray-600 mb-1">Credential ID</p>
+                  <p id="credentialIdDisplay" class="font-mono text-gray-900 font-semibold break-all">-</p>
                 </div>
-
-                <div class="codebox">
-                  <p class="text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.9);">Verification ID (Public)</p>
-                  <p id="verificationId" class="mt-1 font-mono text-sm font-semibold break-all" style="color: var(--ink);">—</p>
-                </div>
-
-                <!-- Blockchain panel -->
-                <div class="codebox no-print">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2">
-                      <i class="fas fa-link" style="color: var(--brand);"></i>
-                      <p class="font-semibold" style="color: var(--ink);">Blockchain Proof</p>
-                    </div>
-                    <div id="blockchainStatus"></div>
-                  </div>
-
-                  <div class="mt-3 p-3 rounded-xl" style="background: rgba(255,255,255,.75); border:1px solid rgba(15,23,42,.10);">
-                    <p class="text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.9);">Signature / Hash</p>
-                    <code id="blockchainHash" class="block mt-1 text-xs font-mono break-all" style="color: rgba(11,18,32,.92);">—</code>
-                  </div>
-
-                  <p class="mt-2 text-xs" style="color: rgba(81,96,122,.9);">
-                    <i class="fas fa-clock mr-1"></i>
-                    Verified on <span id="verificationTime">—</span>
-                  </p>
+                <div class="bg-white bg-opacity-70 rounded-xl p-4" style="border:1px solid rgba(15,23,42,.10);">
+                  <p class="text-xs uppercase tracking-widest text-gray-600 mb-1">Verification ID</p>
+                  <p id="verificationId" class="font-mono text-gray-900 font-semibold break-all">-</p>
                 </div>
               </div>
 
               <div class="md:col-span-1 flex flex-col items-center">
-                <div class="seal" title="CredChain Certified">
-                  <div class="text-center">
-                    <i class="fas fa-certificate text-white text-2xl"></i>
-                    <p class="mt-1 text-xs font-bold tracking-widest uppercase text-white">CREDCHAIN</p>
-                  </div>
+                <div class="seal mb-2">
+                  <i class="fas fa-certificate text-white text-2xl"></i>
                 </div>
-                <p class="mt-3 text-xs text-center px-6" style="color: rgba(81,96,122,.95);">
-                  Cryptographically signed and tamper-evident verification.
+                <p class="text-xs text-gray-600 text-center px-4">
+                  Cryptographically sealed and tamper-evident.
                 </p>
               </div>
             </div>
 
-            <!-- Signature row -->
-            <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 items-end">
+            <!-- Blockchain Verification (Web only) -->
+            <div class="no-print">
+              <div class="rounded-2xl p-5"
+                   style="background: rgba(255,255,255,.70); border: 1px solid rgba(15,23,42,.10); box-shadow: 0 12px 22px rgba(2,6,23,.06);">
+                <div class="flex items-center justify-between mb-3 gap-3 flex-wrap">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-link text-blue-700"></i>
+                    <span class="font-semibold text-gray-900">Blockchain Proof</span>
+                  </div>
+                  <div id="blockchainStatus" class="text-sm"></div>
+                </div>
+
+                <div class="bg-white rounded-xl p-4 mb-2" style="border:1px solid rgba(15,23,42,.10);">
+                  <p class="text-xs uppercase tracking-widest text-gray-600 mb-1">Blockchain Signature</p>
+                  <code id="blockchainHash" class="text-xs font-mono text-gray-900 break-all">-</code>
+                </div>
+
+                <p class="text-xs text-gray-600">
+                  <i class="fas fa-clock mr-1"></i>
+                  Verified on <span id="verificationTime">-</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Signature Row (presentation WOW) -->
+            <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 items-end">
               <div class="text-center sm:text-left">
-                <div class="mx-auto sm:mx-0" style="height:1px;background: rgba(15,23,42,.18); max-width: 240px;"></div>
-                <p class="mt-2 text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.9);">Authorised Signature</p>
+                <div class="mx-auto sm:mx-0" style="height:1px;background: rgba(15,23,42,.22); max-width: 220px;"></div>
+                <p class="mt-2 text-xs uppercase tracking-widest text-gray-600">Director / Registrar</p>
               </div>
 
               <div class="text-center">
-                <p class="text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.9);">Digital Registry</p>
-                <p class="text-sm font-semibold" style="color: var(--ink);">CredChain Verification Portal</p>
+                <p class="text-xs uppercase tracking-widest text-gray-600">Digital Registry</p>
+                <p class="text-sm font-semibold text-gray-900">CredChain Verification Portal</p>
               </div>
 
               <div class="text-center sm:text-right">
-                <div class="mx-auto sm:ml-auto sm:mr-0" style="height:1px;background: rgba(15,23,42,.18); max-width: 240px;"></div>
-                <p class="mt-2 text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.9);">Institution Stamp</p>
+                <div class="mx-auto sm:ml-auto sm:mr-0" style="height:1px;background: rgba(15,23,42,.22); max-width: 220px;"></div>
+                <p class="mt-2 text-xs uppercase tracking-widest text-gray-600">Institution Stamp</p>
               </div>
             </div>
 
-            <!-- Print-only blockchain -->
-            <div class="print-only mt-10 pt-6" style="border-top: 1px solid rgba(15,23,42,.15);">
+            <!-- Print Version Blockchain Info -->
+            <div class="print-only mt-6 pt-6 border-t border-gray-300">
               <div class="text-center">
-                <p class="text-sm font-semibold" style="color: var(--ink);">Blockchain Certified</p>
-                <div class="mt-3" style="background: #f3f4f6; border: 1px solid rgba(15,23,42,.12); border-radius: 10px; padding: 10px;">
-                  <p class="text-xs uppercase tracking-widest" style="color: rgba(81,96,122,.9);">Digital Signature</p>
-                  <code id="blockchainHashPrint" class="block mt-1 text-xs font-mono break-all" style="color: var(--ink);">—</code>
+                <p class="text-sm text-gray-700 mb-2 font-semibold">Blockchain Certified</p>
+                <div class="bg-gray-100 rounded p-3">
+                  <p class="text-xs text-gray-600 mb-1">Digital Signature</p>
+                  <code id="blockchainHashPrint" class="text-xs font-mono text-gray-800 break-all">-</code>
                 </div>
-                <p class="text-xs mt-3" style="color: rgba(81,96,122,.95);">
-                  This certificate is cryptographically signed and recorded on an immutable blockchain.
+                <p class="text-xs text-gray-500 mt-2">
+                  This certificate is cryptographically signed and recorded on an immutable blockchain
                 </p>
               </div>
             </div>
-
-            <!-- Footer microtext -->
-            <div class="mt-10 text-center">
-              <p class="text-xs" style="color: rgba(81,96,122,.9);">
-                To validate: enter the public verification ID on this portal or share the link. Any tampering will fail integrity checks.
-              </p>
-            </div>
-
           </div>
         </div>
       </div>
-
-      <!-- Simple status (kept for compatibility, hidden) -->
-      <div class="hidden">
-        <div id="statusDot"></div>
-        <div id="statusText"></div>
-      </div>
     </div>
 
-    <!-- Footer -->
+    <!-- System Info -->
     <div class="no-print mt-8 text-center">
       <p class="text-sm text-gray-500">
         <i class="fas fa-shield-alt text-blue-600 mr-1"></i>
@@ -532,25 +475,30 @@
   </div>
 
   <script>
+    // Configuration
     const API_BASE_URL = 'http://localhost:8080';
 
+    // Get public ID from URL
     function getPublicIdFromUrl() {
       const params = new URLSearchParams(window.location.search);
       return params.get('publicId') || '';
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
       const publicId = getPublicIdFromUrl();
       if (publicId) {
         document.getElementById('credentialId').value = publicId;
-        setTimeout(() => verifyCredential(), 600);
+        setTimeout(() => verifyCredential(), 800);
       }
     });
 
+    // Example function
     function useExample() {
       document.getElementById('credentialId').value = 'fd9acfcd-9602-4cc5-8612-b84f4c48383c';
     }
 
+    // Main verification function
     async function verifyCredential() {
       const input = document.getElementById('credentialId').value.trim();
       if (!input) {
@@ -581,17 +529,25 @@
       }
     }
 
+    // API calls
     async function verifyWithAPI(publicId) {
       const response = await fetch(`${API_BASE_URL}/api/public/verify/${encodeURIComponent(publicId)}`, {
         method: 'GET',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
       });
 
       if (!response.ok) {
-        if (response.status === 404) throw new Error('Credential not found in registry');
-        if (response.status === 400) throw new Error('Invalid credential ID format');
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Server error: ${response.status}`);
+        if (response.status === 404) {
+          throw new Error('Credential not found in registry');
+        } else if (response.status === 400) {
+          throw new Error('Invalid credential ID format');
+        } else {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || `Server error: ${response.status}`);
+        }
       }
 
       return await response.json();
@@ -601,127 +557,127 @@
       try {
         const response = await fetch(`${API_BASE_URL}/api/public/blockchain/proof/${encodeURIComponent(publicId)}`, {
           method: 'GET',
-          headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
         });
 
-        if (response.ok) return await response.json();
-
-        return { existsOnChain: false, active: false, hashMatch: false, credentialHash: null, error: 'Blockchain verification unavailable' };
+        if (response.ok) {
+          return await response.json();
+        } else {
+          return {
+            existsOnChain: false,
+            credentialHash: null,
+            error: 'Blockchain verification unavailable'
+          };
+        }
       } catch (error) {
-        return { existsOnChain: false, active: false, hashMatch: false, credentialHash: null, error: error.message };
+        return {
+          existsOnChain: false,
+          credentialHash: null,
+          error: error.message
+        };
       }
     }
 
+    // Display results
     function displayResults(apiData, blockchainProof, publicId) {
       const resultDiv = document.getElementById('result');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const blockchainStatus = document.getElementById('blockchainStatus');
 
-      // Fields
+      // Update certificate fields
       document.getElementById('learnerName').textContent = apiData.learnerFullName || 'Credential Holder';
       document.getElementById('institutionName').textContent = apiData.institutionName || 'Issuing Institution';
       document.getElementById('credentialTitle').textContent = apiData.title || 'Credential';
       document.getElementById('issuedDate').textContent = formatDate(apiData.issuedAt) || 'Not specified';
-      document.getElementById('credentialIdDisplay').textContent = apiData.credentialNumber || (publicId.substring(0, 24) + '…');
+      document.getElementById('credentialIdDisplay').textContent = apiData.credentialNumber || publicId.substring(0, 24) + '...';
       document.getElementById('verificationId').textContent = publicId;
       document.getElementById('verificationTime').textContent = new Date().toLocaleDateString();
 
-      // Hash
+      // Blockchain info
       const hash = blockchainProof.credentialHash || blockchainProof.hash;
       document.getElementById('blockchainHash').textContent = hash || 'Not recorded on blockchain';
       document.getElementById('blockchainHashPrint').textContent = hash || 'Not recorded on blockchain';
 
-      // Badge logic (3 shields)
-      const registryValid = !!apiData.valid;
+      // Determine validity
+      const existsOnChain = blockchainProof.existsOnChain || blockchainProof.active;
+      const isValid = apiData.valid && existsOnChain;
 
-      const existsOnChain = !!(blockchainProof.existsOnChain);
-      const active = blockchainProof.active === undefined ? true : !!blockchainProof.active;
-      const hashMatch = blockchainProof.hashMatch === undefined ? (existsOnChain ? true : false) : !!blockchainProof.hashMatch;
-
-      setShield('Registry', registryValid, 'dotRegistry', 'txtRegistry');
-      setShield('On-Chain', existsOnChain && active, 'dotOnChain', 'txtOnChain', existsOnChain ? (active ? 'Active' : 'Revoked') : 'Not found');
-      setShield('Integrity', hashMatch, 'dotIntegrity', 'txtIntegrity', hashMatch ? 'Hash match' : 'Mismatch');
-
-      // Blockchain status chip
-      const blockchainStatus = document.getElementById('blockchainStatus');
-      blockchainStatus.innerHTML = existsOnChain
-        ? `<span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold"
-                 style="background: rgba(22,163,74,.10); color: rgba(20,83,45,.95); border:1px solid rgba(22,163,74,.18);">
-              <span style="width:8px;height:8px;border-radius:999px;background: rgba(22,163,74,.95);"></span>
-              Recorded on-chain
-           </span>`
-        : `<span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold"
-                 style="background: rgba(245,158,11,.12); color: rgba(120,53,15,.95); border:1px solid rgba(245,158,11,.22);">
-              <span style="width:8px;height:8px;border-radius:999px;background: rgba(245,158,11,.95);"></span>
-              Not on-chain
-           </span>`;
-
-      // Overall validity (what you show to users)
-      const overallValid = registryValid && existsOnChain && active && hashMatch;
-
-      // Keep compatibility IDs (hidden), but set anyway
-      const statusDot = document.getElementById('statusDot');
-      const statusText = document.getElementById('statusText');
-      if (overallValid) {
-        statusDot.className = 'w-3 h-3 rounded-full bg-green-500';
+      if (isValid) {
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-green-500';
         statusText.textContent = '✓ Verified on blockchain';
-      } else if (registryValid && (!existsOnChain || !hashMatch || !active)) {
-        statusDot.className = 'w-3 h-3 rounded-full bg-yellow-500';
-        statusText.textContent = 'Issuer verified (check on-chain / integrity status)';
+        statusText.className = 'font-semibold text-green-700';
+        blockchainStatus.innerHTML = `
+          <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            Blockchain Verified
+          </span>
+        `;
+      } else if (apiData.valid && !existsOnChain) {
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-yellow-500';
+        statusText.textContent = 'Issuer verified (not on blockchain)';
+        statusText.className = 'font-semibold text-yellow-700';
+        blockchainStatus.innerHTML = `
+          <span class="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+            Not on Blockchain
+          </span>
+        `;
       } else {
-        statusDot.className = 'w-3 h-3 rounded-full bg-red-500';
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-red-500';
         statusText.textContent = '✗ Verification failed';
+        statusText.className = 'font-semibold text-red-700';
+        blockchainStatus.innerHTML = `
+          <span class="inline-flex items-center gap-2 bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            Verification Failed
+          </span>
+        `;
       }
 
-      // Show + URL update
+      // Show result
       resultDiv.style.display = 'block';
 
+      // Update URL for sharing
       if (window.history.pushState) {
         const newUrl = `${window.location.origin}${window.location.pathname}?publicId=${encodeURIComponent(publicId)}`;
         window.history.pushState({ path: newUrl }, '', newUrl);
       }
 
+      // Scroll to results
       resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function setShield(label, ok, dotId, txtId, overrideText) {
-      const dot = document.getElementById(dotId);
-      const txt = document.getElementById(txtId);
-
-      if (!dot || !txt) return;
-
-      if (ok) {
-        dot.className = 'dot good';
-        txt.textContent = overrideText || 'Verified';
-      } else {
-        dot.className = 'dot warn';
-        txt.textContent = overrideText || 'Review';
-      }
-    }
-
+    // Helper functions
     function formatDate(dateString) {
       if (!dateString) return null;
       try {
         const date = new Date(dateString);
         if (isNaN(date.getTime())) return dateString;
-        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
       } catch (e) {
         return dateString;
       }
     }
 
+    // UI controls
     function showLoading() {
       document.getElementById('loading').style.display = 'block';
-      const btn = document.getElementById('verifyBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Verifying';
-      btn.style.opacity = '.95';
+      document.getElementById('verifyBtn').disabled = true;
+      document.getElementById('verifyBtn').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Verifying';
     }
 
     function hideLoading() {
       document.getElementById('loading').style.display = 'none';
-      const btn = document.getElementById('verifyBtn');
-      btn.disabled = false;
-      btn.innerHTML = 'Verify';
-      btn.style.opacity = '1';
+      document.getElementById('verifyBtn').disabled = false;
+      document.getElementById('verifyBtn').innerHTML = 'Verify';
     }
 
     function showError(message) {
@@ -739,6 +695,7 @@
       document.getElementById('result').style.display = 'none';
     }
 
+    // Print certificate function
     function printCertificate() {
       window.print();
     }
