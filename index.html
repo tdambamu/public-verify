@@ -527,7 +527,6 @@
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
         }
       });
 
@@ -551,7 +550,6 @@
           method: 'GET',
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
           }
         });
 
@@ -595,8 +593,11 @@
       document.getElementById('blockchainHashPrint').textContent = hash || 'Not recorded on blockchain';
 
       // Determine validity
-      const existsOnChain = blockchainProof.existsOnChain || blockchainProof.active;
-      const isValid = apiData.valid && existsOnChain;
+      const existsOnChain = blockchainProof?.existsOnChain === true
+      const isActive = blockchainProof?.active === true
+        
+      const onChainOk = existsOnChain && isActive
+      const isValid = (apiData?.valid === true) && onChainOk
 
       if (isValid) {
         statusDot.className = 'w-2.5 h-2.5 rounded-full bg-green-500';
